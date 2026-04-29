@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Franez">
+<meta name="theme-color" content="#2563eb">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Franez Pedidos</title>
+<link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiRnJhbmV6IFBlZGlkb3MiLCJzaG9ydF9uYW1lIjoiRnJhbmV6IiwiZGVzY3JpcHRpb24iOiJHZXN0b3IgZGUgcGVkaWRvcyBjb21lcmNpYWxlcyBwcm9mZXNpb25hbCIsInN0YXJ0X3VybCI6Ii4iLCJkaXNwbGF5Ijoic3RhbmRhbG9uZSIsImJhY2tncm91bmRfY29sb3IiOiIjMGYxNzJhIiwidGhlbWVfY29sb3IiOiIjMjU2M2ViIiwib3JpZW50YXRpb24iOiJhbnkifQ==">
+<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMWUzYThhIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMjU2M2ViIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjUxMiIgaGVpZ2h0PSI1MTIiIHJ4PSIxMTIiIGZpbGw9InVybCgjYmcpIi8+PHJlY3QgeD0iNTIiIHk9IjE0OCIgd2lkdGg9IjgiIGhlaWdodD0iMjE2IiByeD0iNCIgZmlsbD0iIzYwYTVmYSIgb3BhY2l0eT0iMC43Ii8+PHRleHQgeD0iODIiIHk9IjM0MCIgZm9udC1mYW1pbHk9IkFyaWFsIEJsYWNrLEFyaWFsIiBmb250LXdlaWdodD0iOTAwIiBmb250LXNpemU9IjIyOCIgZmlsbD0iI2ZmZiIgbGV0dGVyLXNwYWNpbmc9Ii04Ij5GPC90ZXh0Pjx0ZXh0IHg9IjIzOCIgeT0iMzQwIiBmb250LWZhbWlseT0iQXJpYWwgQmxhY2ssSGVsdmV0aWNhIiBmb250LXdlaWdodD0iOTAwIiBmb250LXNpemU9IjIyOCIgZmlsbD0iIzkzYzVmZCIgbGV0dGVyLXNwYWNpbmc9Ii04Ij5OPC90ZXh0PjxyZWN0IHg9IjUyIiB5PSIzNzQiIHdpZHRoPSI0MDgiIGhlaWdodD0iNiIgcng9IjMiIGZpbGw9IiMzYjgyZjYiIG9wYWNpdHk9IjAuNSIvPjxjaXJjbGUgY3g9IjQ2MCIgY3k9IjE0OCIgcj0iMTgiIGZpbGw9IiM2MGE1ZmEiIG9wYWNpdHk9IjAuOCIvPjwvc3ZnPg==">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMWUzYThhIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMjU2M2ViIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjUxMiIgaGVpZ2h0PSI1MTIiIHJ4PSIxMTIiIGZpbGw9InVybCgjYmcpIi8+PHJlY3QgeD0iNTIiIHk9IjE0OCIgd2lkdGg9IjgiIGhlaWdodD0iMjE2IiByeD0iNCIgZmlsbD0iIzYwYTVmYSIgb3BhY2l0eT0iMC43Ii8+PHRleHQgeD0iODIiIHk9IjM0MCIgZm9udC1mYW1pbHk9IkFyaWFsIEJsYWNrLEFyaWFsIiBmb250LXdlaWdodD0iOTAwIiBmb250LXNpemU9IjIyOCIgZmlsbD0iI2ZmZiIgbGV0dGVyLXNwYWNpbmc9Ii04Ij5GPC90ZXh0Pjx0ZXh0IHg9IjIzOCIgeT0iMzQwIiBmb250LWZhbWlseT0iQXJpYWwgQmxhY2ssSGVsdmV0aWNhIiBmb250LXdlaWdodD0iOTAwIiBmb250LXNpemU9IjIyOCIgZmlsbD0iIzkzYzVmZCIgbGV0dGVyLXNwYWNpbmc9Ii04Ij5OPC90ZXh0PjxyZWN0IHg9IjUyIiB5PSIzNzQiIHdpZHRoPSI0MDgiIGhlaWdodD0iNiIgcng9IjMiIGZpbGw9IiMzYjgyZjYiIG9wYWNpdHk9IjAuNSIvPjxjaXJjbGUgY3g9IjQ2MCIgY3k9IjE0OCIgcj0iMTgiIGZpbGw9IiM2MGE1ZmEiIG9wYWNpdHk9IjAuOCIvPjwvc3ZnPg==">
+<!-- ██ BLOQUE:STYLE-INICIO ██ -->
+<link rel="stylesheet" href="franez.css">
+<!-- ██ BLOQUE:STYLE-FIN ██ -->
+<!-- Firebase SDK -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, set, get, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+  const firebaseConfig = {
+    apiKey: "AIzaSyCujMWXSzg1A0DSK3OABch0gkWKkAHLS3U",
+    authDomain: "cmr-franez.firebaseapp.com",
+    databaseURL: "https://cmr-franez-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "cmr-franez",
+    storageBucket: "cmr-franez.firebasestorage.app",
+    messagingSenderId: "1083773900994",
+    appId: "1:1083773900994:web:a51fbffc904da8d9a2435b"
+  };
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  window._fbDb = db;
+  window._fbRef = ref;
+  window._fbSet = set;
+  window._fbGet = get;
+
+  let _ignoreNextRemote = false;
+  let _lastLocalSave = 0;
+  window._fbIgnoreNext = () => { _ignoreNextRemote = true; };
+  window._setLastLocalSave = ts => { _lastLocalSave = ts; };
+
+  onValue(ref(db, 'franez'), snapshot => {
+    if (_ignoreNextRemote) { _ignoreNextRemote = false; return; }
+    const val = snapshot.val();
+    if (!val) return;
+    const remoteTs = val._ts || 0;
+    if (remoteTs > _lastLocalSave + 3000) {
+      if (typeof window.mergeRemoteState === 'function') {
+        window.mergeRemoteState(val);
+      }
+    }
+  });
+</script>
+</head>
+<body>
+<div id="error-log" style="position:fixed;bottom:0;left:0;right:0;background:red;color:white;font-size:12px;padding:8px;z-index:9999;display:none;max-height:200px;overflow:auto"></div>
+<script>
+window.onerror = function(msg, src, line) {
+  var d = document.getElementById('error-log');
+  d.style.display = 'block';
+  d.innerHTML += msg + ' (línea '+line+')<br>';
+};
+</script>
+<!-- ██ BLOQUE:NAV-INICIO ██ -->
+<nav id="nav">
+  <span id="nav-title">&#9889; Franez v2.6.7</span>
+  <button class="nav-btn active" onclick="showPanel('pedidos',this)">Pedidos</button>
+  <button class="nav-btn ai-btn" onclick="showPanel('ia',this)">&#10024; Pedido IA</button>
+  <button class="nav-btn" onclick="showPanel('visitas',this)" style="display:none">&#128205; Visitas</button>
+  <button class="nav-btn" onclick="showPanel('clientes',this)">Clientes</button>
+  <button class="nav-btn" onclick="showPanel('productos',this)">Productos</button>
+  <button class="nav-btn" onclick="showPanel('ofertas',this)">Ofertas</button>
+  <button class="nav-btn" onclick="showPanel('stock',this)">Stock <span class="nav-badge hidden" id="stock-badge">0</span></button>
+  <button class="nav-btn" onclick="showPanel('escalado',this)">Escalado</button>
+  <button class="nav-btn" onclick="showPanel('historial',this)">Historial</button>
+  <button class="nav-btn" onclick="showPanel('campanas',this)">&#128227; Campa&ntilde;as <span class="nav-badge hidden" id="camp-badge">!</span></button>
+  <button class="nav-btn" onclick="showPanel('ajustes',this)">Ajustes</button>
+  <button class="nav-btn" onclick="showPanel('migracion',this)">&#128260; Migración</button>
+  <button class="nav-btn" onclick="showPanel('acerca',this)">Acerca de</button>
+  <button id="btn-tema" onclick="toggleTema()" title="Cambiar tema">🌙</button>
+</nav>
+<!-- ██ BLOQUE:NAV-FIN ██ -->
+<div id="toast-container"></div>
+<div id="print-area"></div>
+
+<!-- ██ BLOQUE:BANNER-CONFIRMACIONES-INICIO ██ -->
+<div id="banner-confirmaciones" style="display:none;position:fixed;top:60px;left:0;right:0;z-index:8000;background:linear-gradient(90deg,#1e3a8a,#312e81);border-bottom:2px solid #3b82f6;padding:10px 16px;align-items:center;gap:12px;flex-wrap:wrap">
+  <span style="font-size:14px;font-weight:600;color:#fff;flex:1;min-width:200px">&#128276; Hora de revisar confirmaciones de pedidos</span>
+  <button onclick="copiarPromptGemini();document.getElementById('banner-confirmaciones').style.display='none';sessionStorage.setItem('bannerConf','1')" style="background:#2563eb;color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap">&#128203; Copiar prompt para Gemini</button>
+  <button onclick="document.getElementById('banner-confirmaciones').style.display='none';sessionStorage.setItem('bannerConf','1')" style="background:transparent;color:#93c5fd;border:1px solid #3b82f6;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;white-space:nowrap">Ahora no</button>
+</div>
+<!-- ██ BLOQUE:BANNER-CONFIRMACIONES-FIN ██ -->
+
+<!-- ██ BLOQUE:POPUP-INICIO-INTELIGENTE-INICIO ██ -->
+<div id="popup-inicio" class="modal-overlay hidden">
+  <div class="modal-box" style="border-color:var(--cobalt);box-shadow:0 8px 40px rgba(37,99,235,.4);max-width:460px">
+    <div class="modal-icon">⚡</div>
+    <div class="modal-title" style="color:#93c5fd">Novedades para hoy</div>
+    <div class="modal-body" id="popup-inicio-body" style="text-align:left;font-size:13px;line-height:1.8"></div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
+      <button class="modal-btn" style="background:var(--slate2);color:var(--text)" onclick="posponerPopupInicio()">⏸ Aplazar (recordar en 1h)</button>
+      <button class="modal-btn" style="background:transparent;color:var(--text3);border:1px solid var(--border)" onclick="cerrarPopupInicioDia()">✕ Cerrar hasta mañana</button>
+    </div>
+  </div>
+</div>
+<!-- ██ BLOQUE:POPUP-INICIO-INTELIGENTE-FIN ██ -->
+
+<!-- ██ BLOQUE:BARRA-PEDIDO-INICIO ██ -->
+<div id="barra-pedido">
+  <div class="barra-item">
+    <span class="barra-item-label">L&iacute;neas</span>
+    <span class="barra-item-value" id="barra-lineas">0</span>
+  </div>
+  <div class="barra-sep"></div>
+  <div class="barra-item">
+    <span class="barra-item-label">Total</span>
+    <span class="barra-item-value" id="barra-total">0,00 &euro;</span>
+  </div>
+  <div class="barra-sep"></div>
+  <div class="barra-item">
+    <span class="barra-item-label">Portes</span>
+    <span class="barra-item-value" id="barra-portes">-</span>
+  </div>
+</div>
+<!-- ██ BLOQUE:BARRA-PEDIDO-FIN ██ -->
+
+<!-- ██ BLOQUE:PEDIDOS-INICIO ██ -->
+<div class="panel active" id="panel-pedidos">
+  <div id="alert-probioticos" class="alert alert-purple hidden">
+    <span id="alert-probioticos-text"></span>
+    <button class="alert-close" onclick="this.parentNode.classList.add('hidden')">&#10005;</button>
+  </div>
+  <div id="alert-contrato" class="alert alert-orange hidden">
+    <span id="alert-contrato-text"></span>
+    <button class="alert-close" onclick="this.parentNode.classList.add('hidden')">&#10005;</button>
+  </div>
+  <div id="aviso-camp-acumulado" class="hidden"></div>
+  <div id="order-tabs">
+    <button class="order-tab active" onclick="switchOrder(0)">Pedido 1</button>
+    <button class="order-tab" onclick="switchOrder(1)">Pedido 2</button>
+    <button class="order-tab" onclick="switchOrder(2)">Pedido 3</button>
+  </div>
+  <div id="pedidos-container">
+    <div>
+      <div id="status-bar">
+        <div class="form-group" style="min-width:200px;flex:2">
+          <label>Cliente</label>
+          <div class="cb-wrap">
+            <input type="text" class="cb-input" id="cb-cliente-input" placeholder="Buscar cliente..." autocomplete="off">
+            <span class="cb-arrow">&#9660;</span>
+            <div class="cb-list" id="cb-cliente-list"></div>
+          </div>
+          <input type="hidden" id="cb-cliente-val">
+        </div>
+        <div class="status-badge"><span class="badge-label">DTO CLI:</span><span class="badge-value" id="badge-dto-cliente">-</span></div>
+        <div class="status-badge"><span class="badge-label">DTO ACTIVO:</span><span class="badge-value" id="badge-dto-activo">-</span></div>
+        <div class="status-badge"><span class="badge-label">Contrato:</span><span id="badge-contrato" style="font-size:12px">Sin contrato</span></div>
+        <div class="form-group" style="min-width:160px;flex:1.5">
+          <label>Oferta</label>
+          <select id="sel-oferta" onchange="onOfertaChange()" style="min-height:44px">
+            <option value="">-- Sin oferta --</option>
+          </select>
+        </div>
+        <button class="btn btn-danger btn-sm" onclick="vaciarPedido()" style="align-self:flex-end">Vaciar</button>
+        <button class="btn btn-ghost btn-sm" onclick="abrirNotasProximoPedido()" style="align-self:flex-end" title="Notas para el próximo pedido">&#128221; Notas</button>
+        <button class="btn btn-ghost btn-sm" onclick="abrirCambioDescuento()" style="align-self:flex-end" title="Cambiar descuento del cliente">% Dto</button>
+        <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text2);cursor:pointer;align-self:flex-end;padding-bottom:8px" title="El pedido no se guardará en el historial">
+          <input type="checkbox" id="chk-prueba" style="width:16px;height:16px;accent-color:var(--orange)"> Prueba
+        </label>
+      </div>
+      <div class="card">
+        <div class="card-title">A&ntilde;adir L&iacute;nea</div>
+        <div class="form-row" style="align-items:flex-end;gap:8px">
+          <div class="form-group" style="flex:3;min-width:200px">
+            <label>Producto</label>
+            <div class="cb-wrap">
+              <input type="text" class="cb-input" id="cb-producto-input" placeholder="Buscar producto..." autocomplete="off">
+              <span class="cb-arrow">&#9660;</span>
+              <div class="cb-list" id="cb-producto-list"></div>
+            </div>
+            <input type="hidden" id="cb-producto-val">
+          </div>
+          <div class="form-group" style="flex:0 0 82px;min-width:0">
+            <label>Uds</label>
+            <input type="number" id="inp-uds" value="1" min="1" style="min-height:44px" oninput="var pv=document.getElementById('cb-producto-val').value;if(pv) mostrarAvisoCampLinea(pv);">
+          </div>
+          <div class="form-group" style="flex:0 0 82px;min-width:0">
+            <label>Dto%</label>
+            <input type="number" id="inp-dto" min="0" max="99" style="min-height:44px">
+          </div>
+          <button id="btn-anadir" class="btn btn-primary" onclick="addLinea()" tabindex="0">+ A&ntilde;adir</button>
+        </div>
+        <div id="stock-aviso-pedido" class="stock-aviso"></div>
+        <div id="aviso-camp-linea" class="aviso-camp-linea hidden" onclick="showPanel('campanas',document.querySelectorAll('.nav-btn')[8])"><span style="font-size:16px;flex-shrink:0">&#9889;</span><span id="aviso-camp-linea-text"></span><span style="margin-left:auto;font-size:11px;opacity:.8">&rarr; Ver Campa&ntilde;as</span></div>
+        <div id="oferta-counter" class="hidden" style="background:var(--slate2);border-radius:8px;padding:10px 14px;font-size:14px;color:var(--cobalt-light);font-weight:600;margin-top:6px"></div>
+        <div id="ia-pendientes" class="hidden" style="background:#1c1a0a;border:1px solid #92400e;border-radius:8px;padding:10px 14px;font-size:13px;color:#fbbf24;margin-top:6px">
+          <div style="font-weight:700;margin-bottom:6px">&#9888; L&iacute;neas IA sin identificar &mdash; busca manualmente:</div>
+          <div id="ia-pendientes-list"></div>
+          <button onclick="document.getElementById('ia-pendientes').classList.add('hidden')" style="background:transparent;border:none;color:#fbbf24;font-size:12px;cursor:pointer;margin-top:6px;text-decoration:underline">Cerrar</button>
+        </div>
+      </div>
+      <div class="card" style="overflow-x:auto">
+        <div class="card-title">L&iacute;neas del Pedido <span id="lines-count" style="color:var(--text3);font-weight:400;font-size:12px;text-transform:none;letter-spacing:0"></span></div>
+        <table class="lines-table">
+          <thead><tr>
+            <th>Descripci&oacute;n</th><th style="width:75px">Uds</th><th style="width:50px">Env.</th><th style="width:85px">PVP</th>
+            <th style="width:72px">Dto%</th><th style="width:90px">Neto/U</th><th style="width:100px">Total</th><th style="width:36px"></th>
+          </tr></thead>
+          <tbody id="lines-tbody"></tbody>
+        </table>
+        <div id="lines-empty" style="text-align:center;padding:24px;color:var(--text3);font-size:14px">Sin l&iacute;neas a&uacute;n. Selecciona un producto y pulsa A&ntilde;adir.</div>
+        <div style="margin-top:12px">
+          <label style="font-size:12px;color:var(--text2);font-weight:600;text-transform:uppercase;letter-spacing:.4px">Observaciones del pedido</label>
+          <textarea class="notas-pedido" id="notas-pedido" placeholder="Instrucciones especiales, acuerdos, notas de entrega..." oninput="onNotasChange()"></textarea>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Portes</div>
+        <div class="form-row" style="align-items:flex-start">
+          <div class="form-group" style="flex:0 0 180px">
+            <label>Estado</label>
+            <select id="sel-portes" onchange="onPortesChange()">
+              <option value="auto">Autom&aacute;tico</option>
+              <option value="pagados">Pagados</option>
+              <option value="debidos">Debidos</option>
+            </select>
+          </div>
+          <div class="portes-info">
+            <div id="portes-info-text" style="font-size:14px;font-weight:600;margin-bottom:4px"></div>
+            <div class="portes-progress"><div class="portes-bar" id="portes-bar" style="width:0%"></div></div>
+            <div id="portes-umbral-text" style="font-size:12px;color:var(--text3)"></div>
+            <div id="portes-beneficio" style="font-size:12px;color:var(--text3);margin-top:4px"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="summary-card">
+      <div class="card">
+        <div class="card-title">Resumen del Pedido</div>
+        <div class="summary-row"><span>Base Imponible</span><span id="sum-base">0,00 &euro;</span></div>
+        <div class="summary-row"><span>IVA (10%)</span><span id="sum-iva">0,00 &euro;</span></div>
+        <div class="summary-row"><span>R.E. (1,4%)</span><span id="sum-re">0,00 &euro;</span></div>
+        <div class="summary-row"><span style="color:var(--text2)">Beneficio est.</span><span id="sum-beneficio" style="color:#22c55e">0,00 &euro;</span></div>
+        <div class="summary-row"><span><strong>TOTAL</strong></span><span class="summary-total" id="sum-total">0,00 &euro;</span></div>
+        <div class="summary-row"><span>Total unidades</span><span id="sum-uds">0</span></div>
+        <div class="summary-row"><span>Portes</span><span id="sum-portes" style="font-weight:700">-</span></div>
+        <div id="sum-entregas" class="hidden" style="background:var(--slate2);border-radius:8px;padding:10px 14px;margin-top:8px;font-size:13px;color:var(--cobalt-light)"></div>
+        <div style="margin-top:20px">
+          <button class="btn btn-primary btn-lg" onclick="compartirNota()">&#128226; Compartir Nota (PDF)</button>
+          <button class="btn btn-success btn-lg" onclick="imprimirPedido()">&#128424; Imprimir / PDF</button>
+        </div>
+        <div id="client-preview" class="hidden" style="margin-top:14px;border-top:1px solid var(--border);padding-top:12px;font-size:13px;color:var(--text2)">
+          <div id="client-preview-content"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ██ BLOQUE:PEDIDOS-FIN ██ -->
+
+<!-- ██ BLOQUE:PEDIDO-IA-INICIO ██ -->
+<div class="panel" id="panel-ia">
+  <div class="ia-hero">
+    <div class="ia-hero-title">&#10024; Pedido por Inteligencia Artificial <span class="ia-badge">v2.0.2</span></div>
+    <div class="ia-hero-sub">Pega el mensaje de WhatsApp o email del cliente. La IA interpreta lo que pide, cruza con tu cat&aacute;logo y construye el pedido autom&aacute;ticamente.</div>
+  </div>
+  <div style="max-width:700px">
+    <div id="ia-apikey-section" style="display:none">
+      <div class="ia-api-key-box">
+        <div class="ia-api-key-title">&#128273; API Key de Anthropic (Claude)</div>
+        <input type="password" class="ia-api-key-input" id="ia-api-key" placeholder="sk-ant-..." autocomplete="off" oninput="onApiKeyChange()">
+        <div style="font-size:12px;color:#d97706;margin-top:6px">Tu clave se guarda solo en este dispositivo. Obt&eacute;nla en <strong>console.anthropic.com</strong> &rarr; API Keys</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ia-step"><div class="ia-step-num">1</div><div><div class="ia-step-label">Selecciona el cliente</div></div></div>
+      <div class="cb-wrap">
+        <input type="text" class="cb-input" id="cb-ia-cliente-input" placeholder="Buscar cliente..." autocomplete="off">
+        <span class="cb-arrow">&#9660;</span>
+        <div class="cb-list" id="cb-ia-cliente-list"></div>
+      </div>
+      <input type="hidden" id="cb-ia-cliente-val">
+      <div id="ia-cliente-info" style="margin-top:8px;font-size:13px;color:var(--text2)"></div>
+    </div>
+    <div class="card">
+      <div class="ia-step"><div class="ia-step-num">2</div><div><div class="ia-step-label">Pega el mensaje del cliente</div></div></div>
+      <textarea class="ia-textarea" id="ia-texto" placeholder="Ejemplo: hola! quiero 3 de los yogures de siempre y 2 del probiotico grande, ah y una caja de queso fresco gracias"></textarea>
+      <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap">
+        <button class="btn btn-ai" id="btn-ia-parse" onclick="parsearIA()" style="flex:1;min-width:180px;min-height:52px;font-size:16px">&#10024; Interpretar con IA</button>
+        <button class="btn btn-ghost btn-sm" onclick="limpiarIA()">Limpiar</button>
+      </div>
+    </div>
+    <div id="ia-result-zone"></div>
+    <div style="margin-top:16px;text-align:right">
+      <button onclick="document.getElementById('ia-apikey-section').style.display=document.getElementById('ia-apikey-section').style.display==='none'?'block':'none'" style="background:transparent;border:none;color:var(--text3);font-size:12px;cursor:pointer;text-decoration:underline">&#9881; Configurar API Key</button>
+    </div>
+    <div style="margin-top:8px;padding:10px 14px;font-size:12px;color:var(--text3);line-height:1.6;border-top:1px solid var(--border)">
+      La IA detecta productos y cantidades aunque est&eacute;n mal escritos o sean informales, los cruza con tu cat&aacute;logo y te muestra opciones si hay dudas.
+    </div>
+  </div>
+</div>
+<!-- ██ BLOQUE:PEDIDO-IA-FIN ██ -->
+
+<!-- ██ BLOQUE:VISITAS-INICIO ██ -->
+<div class="panel" id="panel-visitas">
+  <div style="background:linear-gradient(135deg,var(--cobalt-dark) 0%,var(--cobalt) 50%,var(--cobalt-light) 100%);border-radius:20px;padding:28px 24px;margin-bottom:20px;position:relative;overflow:hidden">
+    <div style="position:absolute;top:-30px;right:-30px;width:140px;height:140px;background:radial-gradient(circle,rgba(255,255,255,.08) 0%,transparent 70%);pointer-events:none"></div>
+    <div style="position:absolute;bottom:-20px;left:-20px;width:100px;height:100px;background:radial-gradient(circle,rgba(255,255,255,.05) 0%,transparent 70%);pointer-events:none"></div>
+    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+      <div style="width:52px;height:52px;background:rgba(255,255,255,.15);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px">&#128205;</div>
+      <div>
+        <div style="font-size:22px;font-weight:800;color:#fff;margin-bottom:4px;letter-spacing:-0.3px">Panel de Visitas</div>
+        <div style="font-size:13px;color:rgba(255,255,255,.75);line-height:1.4">Planificador semanal &middot; Sem&aacute;foro de prioridades &middot; Briefing de cliente</div>
+      </div>
+    </div>
+  </div>
+  <div style="display:flex;gap:6px;margin-bottom:20px;background:var(--slate);border-radius:14px;padding:6px;border:1px solid var(--border);flex-wrap:wrap" id="visitas-tabs-container">
+    <button class="visita-tab-btn active" onclick="switchVisitaTab('semana',this)" style="flex:1;min-width:120px;padding:12px 16px;border-radius:10px;font-size:14px;font-weight:600;border:none;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;background:var(--cobalt);color:#fff">
+      <span>&#128197;</span><span>Planificador</span>
+    </button>
+    <button class="visita-tab-btn" onclick="switchVisitaTab('zona',this)" style="flex:1;min-width:120px;padding:12px 16px;border-radius:10px;font-size:14px;font-weight:600;border:none;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;background:transparent;color:var(--text2)">
+      <span>&#128269;</span><span>Por Zona</span>
+    </button>
+    <button class="visita-tab-btn" onclick="switchVisitaTab('briefing',this)" style="flex:1;min-width:120px;padding:12px 16px;border-radius:10px;font-size:14px;font-weight:600;border:none;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;background:transparent;color:var(--text2)">
+      <span>&#128203;</span><span>Briefing</span>
+    </button>
+  </div>
+  <div id="visita-tab-semana">
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:12px">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="width:42px;height:42px;background:var(--cobalt);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px">&#128198;</div>
+          <div>
+            <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px">Semana del</div>
+            <div style="font-size:17px;font-weight:700;color:var(--text)" id="semana-label"></div>
+          </div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <button onclick="navegarSemana(-1)" style="padding:10px 14px;border-radius:10px;font-size:13px;font-weight:600;border:1px solid var(--border);background:var(--slate2);color:var(--text);cursor:pointer">&#8592; Anterior</button>
+          <button onclick="navegarSemana(0)" style="padding:10px 14px;border-radius:10px;font-size:13px;font-weight:600;border:1px solid var(--cobalt);background:var(--cobalt);color:#fff;cursor:pointer">Hoy</button>
+          <button onclick="navegarSemana(1)" style="padding:10px 14px;border-radius:10px;font-size:13px;font-weight:600;border:1px solid var(--border);background:var(--slate2);color:var(--text);cursor:pointer">Siguiente &#8594;</button>
+        </div>
+      </div>
+      <div style="display:flex;gap:16px;margin-bottom:16px;flex-wrap:wrap;padding:12px 14px;background:var(--slate);border-radius:10px;border:1px solid var(--border)">
+        <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2)"><span style="color:#ef4444">&#9679;</span> Urgente</div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2)"><span style="color:#f59e0b">&#9679;</span> Pr&oacute;ximo</div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2)"><span style="color:#22c55e">&#9679;</span> Al d&iacute;a</div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2)"><span style="color:#6b7280">&#9679;</span> Sin datos</div>
+      </div>
+      <div id="semana-dias-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px"></div>
+    </div>
+  </div>
+  <div id="visita-tab-zona" style="display:none">
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px">
+        <div style="width:42px;height:42px;background:var(--cobalt);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px">&#128506;</div>
+        <div>
+          <div style="font-size:17px;font-weight:700;color:var(--text)">Clientes por Zona</div>
+          <div style="font-size:12px;color:var(--text3)">Filtra y visualiza clientes seg&uacute;n su zona de visita</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;align-items:flex-end">
+        <div class="form-group" style="flex:1;min-width:200px">
+          <label>Zona</label>
+          <select id="sel-zona-visita" onchange="renderClientesPorZona()" style="min-height:44px">
+            <option value="">-- Seleccionar zona --</option>
+          </select>
+        </div>
+        <div class="form-group" style="flex:0 0 140px">
+          <label>Filtrar tipo</label>
+          <select id="sel-tipo-visita" onchange="renderClientesPorZona()" style="min-height:44px">
+            <option value="">Todos</option>
+            <option value="A">Solo A</option>
+            <option value="B">Solo B</option>
+            <option value="C">Solo C</option>
+          </select>
+        </div>
+      </div>
+      <div id="clientes-zona-content"></div>
+    </div>
+  </div>
+  <div id="visita-tab-briefing" style="display:none">
+    <div id="agenda-14-container" style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:16px">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+        <div style="width:42px;height:42px;background:var(--cobalt);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px">&#128197;</div>
+        <div>
+          <div style="font-size:17px;font-weight:700;color:var(--text)">Agenda — próximos 14 días</div>
+          <div style="font-size:12px;color:var(--text3)">Entregas pendientes &middot; Contratos &middot; Campañas</div>
+        </div>
+      </div>
+      <div id="agenda-14-content"><div style="text-align:center;padding:20px;color:var(--text3);font-size:13px">Cargando...</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start" class="briefing-grid">
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px">
+          <div style="width:42px;height:42px;background:var(--cobalt);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px">&#128203;</div>
+          <div>
+            <div style="font-size:17px;font-weight:700;color:var(--text)">Briefing de Visita</div>
+            <div style="font-size:12px;color:var(--text3)">Informaci&oacute;n completa del cliente</div>
+          </div>
+        </div>
+        <div style="margin-bottom:18px">
+          <label style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;display:block;margin-bottom:8px">Buscar Cliente</label>
+          <div class="cb-wrap" style="position:relative">
+            <input type="text" class="cb-input" id="cb-visita-cliente-input" placeholder="Escribe el nombre..." autocomplete="off">
+            <span class="cb-arrow">&#9660;</span>
+            <div class="cb-list" id="cb-visita-cliente-list"></div>
+          </div>
+          <input type="hidden" id="cb-visita-cliente-val">
+        </div>
+        <div id="briefing-content">
+          <div style="text-align:center;padding:40px 20px;color:var(--text3)">
+            <div style="font-size:48px;margin-bottom:12px;opacity:.4">&#128100;</div>
+            <div style="font-size:14px;margin-bottom:4px">Selecciona un cliente</div>
+            <div style="font-size:12px;opacity:.7">para ver su informaci&oacute;n detallada</div>
+          </div>
+        </div>
+      </div>
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:12px">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="width:42px;height:42px;background:var(--cobalt);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px">&#128663;</div>
+            <div>
+              <div style="font-size:17px;font-weight:700;color:var(--text)">Ruta del D&iacute;a</div>
+              <div style="font-size:12px;color:var(--text3)">Gestiona tus visitas de hoy</div>
+            </div>
+          </div>
+          <button onclick="addClienteRuta()" style="padding:10px 16px;border-radius:10px;font-size:13px;font-weight:600;border:none;background:var(--cobalt);color:#fff;cursor:pointer">+ A&ntilde;adir</button>
+        </div>
+        <div id="ruta-dia-content">
+          <div style="text-align:center;padding:40px 20px;color:var(--text3)">
+            <div style="font-size:48px;margin-bottom:12px;opacity:.4">&#128205;</div>
+            <div style="font-size:14px;margin-bottom:4px">Sin visitas planificadas</div>
+            <div style="font-size:12px;opacity:.7">A&ntilde;ade clientes a tu ruta de hoy</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ██ BLOQUE:VISITAS-FIN ██ -->
+
+<!-- ██ BLOQUE:CLIENTES-INICIO ██ -->
+<div class="panel" id="panel-clientes">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start">
+    <div>
+      <!-- ██ BLOQUE:IMPORTAR-CONTRATO-INICIO ██ -->
+      <button onclick="importarContratoPDF()" style="width:100%;margin-bottom:12px;background:transparent;border:2px dashed var(--cobalt);color:var(--cobalt-light);border-radius:10px;padding:12px;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px">
+        📄 Importar desde contrato PDF
+      </button>
+      <!-- ██ BLOQUE:IMPORTAR-CONTRATO-FIN ██ -->
+      <div class="card">
+        <div class="card-title" id="client-form-title">Nuevo Cliente</div>
+        <div class="form-row"><div class="form-group"><label>Nombre completo *</label><input type="text" id="cli-nombre"></div><div class="form-group"><label>Nombre comercial</label><input type="text" id="cli-comercial"></div></div>
+        <div class="form-row"><div class="form-group"><label>NIF/CIF</label><input type="text" id="cli-nif"></div><div class="form-group"><label>Especialidad</label><input type="text" id="cli-especialidad"></div></div>
+        <div class="form-row"><div class="form-group"><label>Direcci&oacute;n</label><input type="text" id="cli-direccion"></div></div>
+        <div class="form-row"><div class="form-group" style="flex:0 0 90px"><label>CP</label><input type="text" id="cli-cp"></div><div class="form-group"><label>Localidad</label><input type="text" id="cli-localidad"></div><div class="form-group"><label>Provincia</label><input type="text" id="cli-provincia"></div></div>
+        <div class="form-row"><div class="form-group"><label>Tel&eacute;fono</label><input type="text" id="cli-telefono"></div><div class="form-group"><label>M&oacute;vil</label><input type="text" id="cli-movil"></div></div>
+        <div class="form-row"><div class="form-group"><label>Email</label><input type="email" id="cli-email"></div></div>
+        <div class="form-row">
+          <div class="form-group" style="flex:0 0 160px"><label>Descuento% (0-99)</label><input type="number" id="cli-descuento" min="0" max="99"></div>
+          <div class="form-group"><label>Contrato vencimiento</label><input type="date" id="cli-contrato"></div>
+          <div class="form-group" style="flex:0 0 120px"><label>Compra</label>
+            <select id="cli-compra">
+              <option value="NO">No</option>
+              <option value="SI">S&iacute;</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row"><div class="form-group" style="flex:0 0 200px"><label>Volumen externo (&euro;)</label><input type="number" id="cli-volumen-externo" min="0" step="0.01" placeholder="0"></div></div>
+        <div class="form-row">
+          <div class="form-group" style="flex:0 0 110px"><label>Tipo visita</label>
+            <select id="cli-tipo-visita" style="min-height:44px">
+              <option value="">--</option>
+              <option value="A">A</option>
+              <option value="B">B</option>
+              <option value="C">C</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Zona de visita</label>
+            <input type="text" id="cli-zona-visita" placeholder="Ej: Málaga, Jerez, Cádiz..." list="zonas-datalist">
+            <datalist id="zonas-datalist"></datalist>
+          </div>
+          <div class="form-group" style="flex:0 0 130px"><label>Días entre visitas</label>
+            <input type="number" id="cli-dias-visita" min="1" max="365" placeholder="Ej: 30">
+          </div>
+        </div>
+        <div class="form-row"><div class="form-group"><label>Notas / Doc.</label><textarea id="cli-notas"></textarea></div></div>
+        <div class="form-row"><div class="form-group"><label>Productos habituales (para detecci&oacute;n de campa&ntilde;as)</label>
+          <input type="text" id="cli-productos-habituales" placeholder="Busca y a&ntilde;ade productos...">
+          <div id="cli-prod-hab-list" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px"></div>
+        </div></div>
+        <input type="hidden" id="cli-editing-id">
+        <input type="hidden" id="cli-prod-hab-ids">
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-primary" onclick="saveCliente()">Guardar Cliente</button>
+          <button class="btn btn-ghost" id="btn-cancel-cli" style="display:none" onclick="clearClientForm()">Cancelar</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Importar CSV / TXT</div>
+        <div style="font-size:12px;color:var(--text2);margin-bottom:10px">15 columnas sep. por ; o , : Nombre, Comercial, Dir, CP, Localidad, Provincia, Tlf, M&oacute;vil, Email, Especialidad, Compra(S/N), TicketVenta, Nota, Dto%, Contrato</div>
+        <input type="file" id="cli-csv-file" accept=".csv,.txt" style="display:none" onchange="importClientesCSV(event)">
+        <button class="btn btn-ghost btn-sm" onclick="document.getElementById('cli-csv-file').click()">&#128190; Seleccionar archivo CSV</button>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <div class="card-title" style="margin:0">Clientes <span id="clientes-count" style="font-size:12px;color:var(--text3)"></span></div>
+        </div>
+        <div class="cli-filtros">
+          <button class="cli-filtro-btn active" onclick="setFiltroClientes('todos',this)">Todos</button>
+          <button class="cli-filtro-btn" onclick="setFiltroClientes('compran',this)">Compran</button>
+          <button class="cli-filtro-btn" onclick="setFiltroClientes('nocompran',this)">No compran</button>
+        </div>
+        <input type="text" id="cli-search" placeholder="&#128269; Nombre, comercial, tel&eacute;fono, m&oacute;vil, direcci&oacute;n, localidad..." style="width:100%;min-height:44px;font-size:14px;padding:10px 14px;margin-bottom:14px;border-radius:8px;background:var(--slate2);border:1px solid var(--border);color:var(--text)" oninput="renderClientesList()">
+        <div id="clientes-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ██ BLOQUE:CLIENTES-FIN ██ -->
+
+<!-- ██ BLOQUE:PRODUCTOS-INICIO ██ -->
+<div class="panel" id="panel-productos">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start">
+    <div>
+      <div class="card">
+        <div class="card-title" id="prod-form-title">Nuevo Producto</div>
+        <div class="form-row"><div class="form-group"><label>Nombre *</label><input type="text" id="prod-nombre"></div></div>
+        <div class="form-row"><div class="form-group"><label>PVP (con IVA)</label><input type="number" id="prod-pvp" min="0" step="0.01" oninput="autocalcCosto(this.value)"></div><div class="form-group"><label>Costo (IVA+RE) <span style="font-size:11px;color:var(--text3);font-weight:400;text-transform:none">auto=PVP×0.70</span></label><input type="number" id="prod-costo" min="0" step="0.01"></div></div>
+        <div class="form-row"><div class="form-group" style="flex:0 0 120px"><label>Uds envase</label><input type="number" id="prod-uds" min="1"></div><div class="form-group" style="flex:0 0 140px"><label>Orden (max 5 chars)</label><input type="text" id="prod-orden" maxlength="5" oninput="this.value=this.value.toUpperCase()"></div><div class="form-group"><label>Ref interna</label><input type="text" id="prod-ref"></div></div>
+        <input type="hidden" id="prod-editing-id">
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-primary" onclick="saveProducto()">Guardar Producto</button>
+          <button class="btn btn-ghost" id="btn-cancel-prod" style="display:none" onclick="clearProductoForm()">Cancelar</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Importar CSV (sep. ;)</div>
+        <div style="font-size:12px;color:var(--text2);margin-bottom:10px">Formato: PRODUCTOS ; IMP. ; COSTO ; UNIDADES ; ORDEN</div>
+        <input type="file" id="prod-csv-file" accept=".csv,.txt" style="display:none" onchange="importProductosCSV(event)">
+        <button class="btn btn-ghost btn-sm" onclick="document.getElementById('prod-csv-file').click()">&#128190; Seleccionar archivo CSV</button>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <div class="card-title" style="margin:0">Productos <span id="productos-count" style="font-size:12px;color:var(--text3)"></span></div>
+          <input type="text" id="prod-search" placeholder="Buscar..." style="max-width:180px;min-height:36px;font-size:13px;padding:6px 12px" oninput="renderProductosList()">
+        </div>
+        <div id="productos-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ██ BLOQUE:PRODUCTOS-FIN ██ -->
+
+<!-- ██ BLOQUE:OFERTAS-INICIO ██ -->
+<div class="panel" id="panel-ofertas">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start">
+    <div>
+      <div class="card">
+        <div class="card-title" id="oferta-form-title">Nueva Oferta</div>
+        <div class="form-row"><div class="form-group"><label>Nombre *</label><input type="text" id="ofer-nombre"></div></div>
+        <div class="form-row"><div class="form-group" style="flex:0 0 140px"><label>Descuento%</label><input type="number" id="ofer-descuento" min="0" max="99"></div><div class="form-group" style="flex:0 0 170px"><label>Uds objetivo (0=auto)</label><input type="number" id="ofer-uds" min="0"></div></div>
+        <input type="hidden" id="ofer-editing-id">
+        <div style="display:flex;gap:10px">
+          <button class="btn btn-primary" onclick="saveOferta()">Guardar Oferta</button>
+          <button class="btn btn-ghost" id="btn-cancel-ofer" style="display:none" onclick="clearOfertaForm()">Cancelar</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Importar CSV</div>
+        <div style="font-size:12px;color:var(--text2);margin-bottom:10px">2 columnas: NOMBRE ; DESCUENTO%</div>
+        <input type="file" id="ofer-csv-file" accept=".csv,.txt" style="display:none" onchange="importOfertasCSV(event)">
+        <button class="btn btn-ghost btn-sm" onclick="document.getElementById('ofer-csv-file').click()">&#128190; Seleccionar archivo CSV</button>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <div class="card-title">Ofertas <span id="ofertas-count" style="font-size:12px;color:var(--text3)"></span></div>
+        <div id="ofertas-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ██ BLOQUE:OFERTAS-FIN ██ -->
+
+<!-- ██ BLOQUE:STOCK-INICIO ██ -->
+<div class="panel" id="panel-stock">
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:12px">
+      <div class="card-title" style="margin:0">Control de Stock <span id="stock-count-title" style="color:var(--red);font-weight:400;font-size:12px;text-transform:none"></span></div>
+      <input type="text" id="stock-search" placeholder="Buscar producto..." style="max-width:220px;min-height:36px;font-size:13px;padding:6px 12px" oninput="renderStockList()">
+    </div>
+    <div id="stock-list"></div>
+  </div>
+</div>
+<!-- ██ BLOQUE:STOCK-FIN ██ -->
+
+<!-- ██ BLOQUE:ESCALADO-INICIO ██ -->
+<div class="panel" id="panel-escalado">
+  <div style="display:grid;grid-template-columns:1fr 400px;gap:16px;align-items:start">
+    <div>
+      <div class="card">
+        <div class="card-title">Seguimiento por Cliente</div>
+        <div class="cli-filtros" style="margin-bottom:10px">
+          <button class="cli-filtro-btn active" onclick="setFiltroEscalado('todos',this)">Todos</button>
+          <button class="cli-filtro-btn" onclick="setFiltroEscalado('compran',this)">Compran</button>
+          <button class="cli-filtro-btn" onclick="setFiltroEscalado('nocompran',this)">No compran</button>
+        </div>
+        <input type="text" id="esc-search" placeholder="Buscar cliente..." style="max-width:240px;min-height:36px;font-size:13px;padding:6px 12px;margin-bottom:16px;width:100%" oninput="renderEscalado()">
+        <div id="escalado-clientes"></div>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <div class="card-title">Tabla Escalado Comercial</div>
+        <table class="esc-table">
+          <thead><tr><th>Vol. Neto</th><th>Dto%</th><th>Obj. Ejercicio</th><th>RFA</th><th>1&ordm; Ped.</th><th>Sig.</th></tr></thead>
+          <tbody>
+            <tr><td>&lt; 1.500&euro;</td><td>30%</td><td>-</td><td>-</td><td>50&euro;</td><td>50&euro;</td></tr>
+            <tr><td>1.500-3.499&euro;</td><td>34%</td><td>&gt;3.500&euro;</td><td>2%</td><td>120&euro;</td><td>50&euro;</td></tr>
+            <tr><td>3.500-4.999&euro;</td><td>36%</td><td>&gt;5.000&euro;</td><td>2%</td><td>400&euro;</td><td>120&euro;</td></tr>
+            <tr><td>5.000-9.999&euro;</td><td>38%</td><td>&gt;10.000&euro;</td><td>2%</td><td>400&euro;</td><td>120&euro;</td></tr>
+            <tr><td>10.000-14.999&euro;</td><td>40%</td><td>&gt;15.000&euro;</td><td>2%</td><td>800&euro;</td><td>150&euro;</td></tr>
+            <tr><td>15.000-19.999&euro;</td><td>42%</td><td>&gt;20.000&euro;</td><td>2%</td><td>800&euro;</td><td>150&euro;</td></tr>
+            <tr><td>20.000-29.999&euro;</td><td>44%</td><td>&gt;30.000&euro;</td><td>1%</td><td>1.500&euro;</td><td>300&euro;</td></tr>
+          </tbody>
+        </table>
+        <div style="font-size:11px;color:var(--text3);margin-top:8px">Nota: el 32% no existe. El 30% y 34% comparten escala.</div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ██ BLOQUE:ESCALADO-FIN ██ -->
+
+<!-- ██ BLOQUE:HISTORIAL-INICIO ██ -->
+<div class="panel" id="panel-historial">
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+      <div class="card-title" style="margin:0">Historial de Pedidos <span id="hist-count" style="font-size:12px;color:var(--text3);font-weight:400;text-transform:none;letter-spacing:0"></span></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-ghost btn-sm" onclick="copiarPromptGemini()" title="Copia un prompt para Gemini que comprueba qué pedidos han recibido confirmación">&#128203; Prompt Gemini</button>
+        <button class="btn btn-ghost btn-sm" onclick="abrirEmailPendientes()" title="Redactar email con los pedidos pendientes de confirmación" style="color:#93c5fd;border:1px solid #3b82f6">&#9993; Email pendientes</button>
+        <button class="btn btn-sm" onclick="enviarPedidosWhatsApp()" style="background:#25d366;color:#fff;border:none" title="Enviar pedidos de hoy por WhatsApp">&#128233; Enviar por WA</button>
+        <button class="btn btn-ghost btn-sm" onclick="importarDesdeMensaje()" style="color:#25d366;border:1px solid #25d366" title="Importar pedidos recibidos por WhatsApp">&#8659; Importar WA</button>
+      </div>
+    </div>
+    <div id="historial-content"></div>
+  </div>
+</div>
+<!-- ██ BLOQUE:HISTORIAL-FIN ██ -->
+
+<!-- ██ BLOQUE:AJUSTES-INICIO ██ -->
+<div class="panel" id="panel-ajustes">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start">
+    <div>
+      <div class="card">
+        <div class="card-title">Delegado</div>
+        <div class="form-row"><div class="form-group"><label>Nombre del delegado</label><input type="text" id="ajuste-delegado" placeholder="Tu nombre completo"></div></div>
+        <button class="btn btn-primary btn-sm" onclick="saveDelegado()">Guardar</button>
+      </div>
+      <div class="card">
+        <div class="card-title">Backup de Datos</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-ghost" onclick="exportarBackup()">&#8595; Exportar JSON</button>
+          <input type="file" id="backup-file" accept=".json,.txt,application/json,text/plain,*/*" style="display:none" onchange="importarBackup(event)">
+          <button class="btn btn-ghost" onclick="document.getElementById('backup-file').click()">&#8593; Importar JSON</button>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <div class="card-title">Estad&iacute;sticas</div>
+        <div class="stats-grid" id="stats-grid"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Acumulado Mensual (12 meses)</div>
+        <div id="acumulado-mensual-grid" style="overflow-x:auto"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Balance Tienda / M&eacute;dico</div>
+        <div id="contador-5050"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Configuraci&oacute;n de Campa&ntilde;as</div>
+        <div class="settings-row">
+          <div class="settings-label"><div class="settings-label-title">Umbral de unidades acumuladas</div><div class="settings-label-sub">M&iacute;nimo de unidades en historial para considerar que un cliente consume un producto</div></div>
+          <input type="number" id="cfg-umbral-uds" class="settings-input" min="1" max="999" value="12" style="width:80px;text-align:center">
+        </div>
+        <div class="settings-row">
+          <div class="settings-label"><div class="settings-label-title">Umbral de pedidos distintos</div><div class="settings-label-sub">N&ordm; m&iacute;nimo de pedidos con ese producto para considerarlo habitual</div></div>
+          <input type="number" id="cfg-umbral-peds" class="settings-input" min="1" max="99" value="2" style="width:80px;text-align:center">
+        </div>
+        <div class="settings-row">
+          <div class="settings-label"><div class="settings-label-title">Margen m&iacute;nimo de mejora de descuento</div><div class="settings-label-sub">Puntos porcentuales m&iacute;nimos que debe mejorar la campa&ntilde;a sobre el descuento habitual del cliente</div></div>
+          <input type="number" id="cfg-margen-dto" class="settings-input" min="1" max="30" value="3" style="width:80px;text-align:center">
+        </div>
+        <div class="settings-row">
+          <div class="settings-label"><div class="settings-label-title">Días aviso contrato</div><div class="settings-label-sub">Días de antelación para avisar de contratos que van a vencer.</div></div>
+          <input type="number" id="cfg-dias-contrato" class="settings-input" min="1" max="90" value="21" style="width:80px;text-align:center">
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="saveConfig()" style="margin-top:8px">Guardar configuraci&oacute;n</button>
+      </div>
+      <div class="card">
+        <div class="card-title">Zonas de Visita</div>
+        <div style="font-size:13px;color:var(--text2);margin-bottom:10px">Gestiona las zonas disponibles para la planificaci&oacute;n de visitas.</div>
+        <div id="zonas-lista" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px"></div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <input type="text" id="zona-nueva-input" placeholder="Nueva zona..." style="flex:1;min-width:140px" onkeydown="if(event.key==='Enter')addZona()">
+          <button class="btn btn-primary btn-sm" onclick="addZona()">+ A&ntilde;adir</button>
+        </div>
+        <div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--border)">
+          <div style="font-size:12px;color:var(--text3);margin-bottom:6px">Opciones especiales (d&iacute;as sin visitas de campo)</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap" id="zonas-especiales-lista"></div>
+        </div>
+      </div>
+      <div class="card danger-zone">
+        <div class="card-title" style="color:var(--red)">&#9888; Zona Peligrosa</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-danger btn-sm" onclick="borrarTipo('clientes')">Clientes</button>
+          <button class="btn btn-danger btn-sm" onclick="borrarTipo('productos')">Productos</button>
+          <button class="btn btn-danger btn-sm" onclick="borrarTipo('ofertas')">Ofertas</button>
+          <button class="btn btn-danger btn-sm" onclick="borrarTipo('stock')">Stock</button>
+          <button class="btn btn-danger btn-sm" onclick="borrarTipo('historial')">Historial</button>
+          <button class="btn btn-danger btn-sm" onclick="borrarTipo('pedidos')">Pedidos activos</button>
+          <button class="btn" style="background:#1e3a5f;color:#93c5fd;border:1px solid #3b82f6" onclick="subirDatosFirebase()">☁️ SUBIR DATOS A LA NUBE</button>
+          <button class="btn" style="background:#1e3a5f;color:#93c5fd;border:1px solid #3b82f6" onclick="localStorage.removeItem('franez_ts');location.reload()">⬇️ BAJAR DATOS DE LA NUBE</button>
+          <button class="btn" style="background:#450a0a;color:#fca5a5;border:1px solid var(--red)" onclick="borrarTodo()">BORRAR TODO</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ██ BLOQUE:AJUSTES-FIN ██ -->
+
+<!-- ██ BLOQUE:MIGRACION-INICIO ██ -->
+<div class="panel" id="panel-migracion">
+  <div style="max-width:700px;margin:0 auto">
+    <div class="camp-hero" style="background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);border-color:#334155">
+      <div class="camp-hero-title">&#128260; Migración de Datos</div>
+      <div class="camp-hero-sub">Cómo mover tus datos entre dispositivos sin perder nada</div>
+    </div>
+    <div class="card">
+      <div class="card-title">&#128190; Exportar datos (PC / Tablet → Móvil)</div>
+      <div style="font-size:14px;color:var(--text2);line-height:1.9;margin-bottom:16px">
+        <div style="display:flex;gap:10px;margin-bottom:8px"><span style="background:var(--cobalt);color:#fff;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0">1</span><span>Ve a <strong style="color:var(--text)">Ajustes → Backup → Exportar JSON</strong> en el dispositivo de origen.</span></div>
+        <div style="display:flex;gap:10px;margin-bottom:8px"><span style="background:var(--cobalt);color:#fff;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0">2</span><span>El archivo se llama <strong style="color:var(--text)">backup_pedidos_DD-M-YYYY.json</strong>.</span></div>
+        <div style="display:flex;gap:10px;margin-bottom:8px"><span style="background:var(--cobalt);color:#fff;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0">3</span><span>En el dispositivo destino, abre Franez y ve a <strong style="color:var(--text)">Ajustes → Backup → Importar JSON</strong>.</span></div>
+        <div style="display:flex;gap:10px"><span style="background:var(--cobalt);color:#fff;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0">4</span><span>Selecciona el archivo JSON. <strong style="color:#f87171">Atención: esto sobreescribe todos los datos del dispositivo destino.</strong></span></div>
+      </div>
+      <button class="btn btn-primary" onclick="showPanel('ajustes',document.querySelector('[onclick*=ajustes]'));setTimeout(function(){exportarBackup();},100)">&#8595; Exportar JSON ahora</button>
+    </div>
+    <div class="card">
+      <div class="card-title">&#128241; Instalar Franez en el móvil</div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.7">
+        <div style="display:flex;gap:10px;margin-bottom:6px"><span style="color:var(--cobalt-light);font-weight:700;min-width:70px">Android:</span><span>Chrome → menú (⋮) → <strong style="color:var(--text)">Añadir a pantalla de inicio</strong></span></div>
+        <div style="display:flex;gap:10px"><span style="color:var(--cobalt-light);font-weight:700;min-width:70px">iPhone:</span><span>Safari → botón compartir → <strong style="color:var(--text)">Añadir a pantalla de inicio</strong></span></div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ██ BLOQUE:MIGRACION-FIN ██ -->
+
+<!-- ██ BLOQUE:ACERCA-DE-INICIO ██ -->
+<div class="panel" id="panel-acerca">
+  <div class="card" style="max-width:700px;margin:0 auto">
+    <div class="about-hero">
+      <div class="about-title">Franez Pedidos</div>
+      <div class="about-version">v2.6.7</div>
+      <div class="about-desc">Gestor de pedidos comerciales profesional para delegados de ventas</div>
+      <div class="about-author">Desarrollado por <strong>Francisco N&uacute;&ntilde;ez Vegas</strong> &bull; 2025</div>
+    </div>
+    <div class="card-title">Historial de versiones</div>
+    <div class="changelog-item"><span class="changelog-version">v2.6.7</span><span class="changelog-desc">Importación automática desde contrato PDF Nutergia. Botón 📄 en sección Clientes: sube el PDF firmado y relleno, extrae los datos, valida el NIF/CIF, clasifica teléfono/móvil y verifica el IBAN. Popup de revisión antes de guardar.</span></div>
+    <div class="changelog-item"><span class="changelog-version">v2.6.6</span><span class="changelog-desc">Fix botón borrar historial. Pestaña Visitas oculta. Popup inicio del día muestra contratos que vencen próximamente. Envío y recepción de pedidos por WhatsApp.</span></div>
+    <div class="changelog-item"><span class="changelog-version">v2.6.5</span><span class="changelog-desc">Sincronización en tiempo real corregida definitivamente.</span></div>
+    <div class="about-legal">
+      &copy; 2025 Francisco N&uacute;&ntilde;ez Vegas. Todos los derechos reservados.
+    </div>
+  </div>
+</div>
+<!-- ██ BLOQUE:ACERCA-DE-FIN ██ -->
+
+<!-- ██ BLOQUE:MODAL-CONTRATO-INICIO ██ -->
+<div id="modal-contrato" class="modal-overlay hidden">
+  <div class="modal-box">
+    <div class="modal-icon">&#9888;&#65039;</div>
+    <div class="modal-title">Contrato Vencido</div>
+    <div class="modal-body" id="modal-contrato-body">El contrato de este cliente ha vencido.</div>
+    <button class="modal-btn" onclick="cerrarModalContrato()">Entendido &mdash; Continuar</button>
+  </div>
+</div>
+<!-- ██ BLOQUE:MODAL-CONTRATO-FIN ██ -->
+
+<!-- ██ BLOQUE:CAMPANAS-INICIO ██ -->
+<div class="panel" id="panel-campanas">
+  <div class="camp-hero">
+    <div class="camp-hero-title">&#128227; Radar de Campa&ntilde;as</div>
+    <div class="camp-hero-sub">Gestiona campa&ntilde;as, detecta oportunidades y consulta clientes candidatos.</div>
+  </div>
+  <div class="camp-tabs">
+    <button class="camp-tab active" onclick="switchCampTab('activas',this)">Activas ahora</button>
+    <button class="camp-tab" onclick="switchCampTab('proximas',this)">Pr&oacute;ximas</button>
+    <button class="camp-tab" onclick="switchCampTab('calendario',this)">Calendario</button>
+    <button class="camp-tab" onclick="switchCampTab('todas',this)">Todas</button>
+    <button class="camp-tab" onclick="switchCampTab('gestion',this)">&#9881; Gesti&oacute;n</button>
+  </div>
+  <div id="camp-content"></div>
+</div>
+<!-- ██ BLOQUE:CAMPANAS-FIN ██ -->
+
+<script src="franez.js"></script>
+</body>
+</html>
