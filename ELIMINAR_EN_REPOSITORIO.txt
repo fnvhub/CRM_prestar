@@ -1,6 +1,9 @@
-Para completar la edición Standalone en la rama desarrollo, elimina estos archivos del repositorio:
+Para completar la edición Standalone en el repositorio CRM_prestar:
+
+Elimina estos archivos del repositorio si todavía existen:
 
 firebase-init.js
 sync.js
+manifest.json
 
 No elimines otros archivos. GitHub se utiliza únicamente para alojar el código y publicar manualmente las versiones; no es una sincronización de datos de la aplicación.

@@ -1,12 +1,23 @@
 {
-  "version": "3.0.10",
+  "version": "3.0.11",
   "fecha": "2026-10-16",
   "cambios": [
-    "3.0.10 — Edición Standalone: Franez trabaja con datos locales y sin sincronización externa.",
+    "3.0.11 — Corrección de la edición Standalone para el repositorio CRM_prestar.",
     "Se elimina la integración y sincronización con Firebase.",
+    "Se corrigen las rutas de version.json para que funcionen dentro de CRM_prestar.",
+    "Se corrige v3.html para no depender de un manifest.json inexistente y se actualiza toda la versión a 3.0.11.",
     "Se conservan el almacenamiento local, las copias de seguridad y la importación de backups."
   ],
   "historial": [
+    {
+      "version": "3.0.11",
+      "fecha": "2026-10-16",
+      "cambios": [
+        "Corrección de la edición Standalone para el repositorio CRM_prestar.",
+        "Se corrigen las rutas de version.json para que funcionen dentro de CRM_prestar.",
+        "Se corrige v3.html para no depender de un manifest.json inexistente y se actualiza toda la versión a 3.0.11."
+      ]
+    },
     {
       "version": "3.0.10",
       "fecha": "2026-10-16",
