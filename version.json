@@ -1,36 +1,34 @@
 {
-  "version": "3.0.9",
-  "fecha": "2026-10-12",
+  "version": "3.0.10",
+  "fecha": "2026-10-16",
   "cambios": [
-    "3.0.9 — Al compartir el pedido como PDF/nota se elimina el mensaje de WhatsApp; el mensaje configurable queda exclusivamente para WhatsApp.",
-    "Se prepara Franez como PWA real: manifest, apertura en modo independiente y pantalla completa sin la interfaz de Chrome.",
-    "Se elimina el botón de Backup de la barra principal. El backup manual permanece en Ajustes.",
-    "Se corrige Avisos para que las tarjetas respeten correctamente los temas diurno/nocturno.",
-    "El botón de Contrato permite modificar y guardar directamente la fecha de caducidad del cliente.",
-    "Compartir Nota (PDF) incluye también las fechas y cantidades de las entregas fraccionadas.",
-    "Se añade en Ajustes un mensaje editable para compartir pedidos por email o WhatsApp.",
-    "Se añade Compartir pedido por WhatsApp y se mantiene un botón Copiar pedido como plan B."
+    "3.0.10 — Edición Standalone: Franez trabaja con datos locales y sin sincronización externa.",
+    "Se elimina la integración y sincronización con Firebase.",
+    "Se conservan el almacenamiento local, las copias de seguridad y la importación de backups."
   ],
   "historial": [
+    {
+      "version": "3.0.10",
+      "fecha": "2026-10-16",
+      "cambios": [
+        "Edición Standalone: Franez trabaja con datos locales y sin sincronización externa.",
+        "Se elimina la integración y sincronización con Firebase.",
+        "Se conservan el almacenamiento local, las copias de seguridad y la importación de backups."
+      ]
+    },
     {
       "version": "3.0.9",
       "fecha": "2026-10-12",
       "cambios": [
-        "Versión PRESTAR independiente, sin sincronización con Firebase. Mantiene almacenamiento local y copia de seguridad manual."
-      ]
-    },
-    {
-      "version": "3.0.8",
-      "fecha": "2026-10-12",
-      "cambios": [
-        "Cambios de PWA, backup, Avisos, contrato, entregas fraccionadas y compartir pedidos."
-      ]
-    },
-    {
-      "version": "3.0.0",
-      "fecha": "2026-10-12",
-      "cambios": [
-        "Nueva pestaña Avisos y eliminación del popup de inicio."
+        "Al compartir el pedido como PDF/nota se elimina el mensaje de WhatsApp; el mensaje configurable queda exclusivamente para WhatsApp.",
+        "Se prepara Franez como PWA real: manifest, apertura en modo independiente y pantalla completa sin la interfaz de Chrome.",
+        "Se elimina el botón 🛡️ Backup de la barra principal. El backup manual permanece en Ajustes y el automático diario sigue bajo control del usuario.",
+        "Se corrige Avisos para que las tarjetas respeten correctamente los temas diurno/nocturno.",
+        "El botón de Contrato permite modificar y guardar directamente la fecha de caducidad del cliente.",
+        "Compartir Nota (PDF) incluye también las fechas y cantidades de las entregas fraccionadas.",
+        "Se añade en Ajustes un mensaje editable para compartir pedidos por email o WhatsApp.",
+        "Se añade Compartir pedido por WhatsApp: usa el móvil/teléfono del cliente, prepara producto + unidades + PVP y deja siempre el envío final en manos del usuario.",
+        "Se mantiene un botón Copiar pedido para WhatsApp como plan B si el enlace directo no funciona."
       ]
     }
   ]
