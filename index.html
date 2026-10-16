@@ -15,43 +15,6 @@
 <!-- ██ BLOQUE:STYLE-INICIO ██ -->
 <link rel="stylesheet" href="franez.css">
 <!-- ██ BLOQUE:STYLE-FIN ██ -->
-<!-- Firebase SDK -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getDatabase, ref, set, get, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
-  const firebaseConfig = {
-    apiKey: "AIzaSyCujMWXSzg1A0DSK3OABch0gkWKkAHLS3U",
-    authDomain: "cmr-franez.firebaseapp.com",
-    databaseURL: "https://cmr-franez-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "cmr-franez",
-    storageBucket: "cmr-franez.firebasestorage.app",
-    messagingSenderId: "1083773900994",
-    appId: "1:1083773900994:web:a51fbffc904da8d9a2435b"
-  };
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
-  window._fbDb = db;
-  window._fbRef = ref;
-  window._fbSet = set;
-  window._fbGet = get;
-
-  let _ignoreNextRemote = false;
-  let _lastLocalSave = 0;
-  window._fbIgnoreNext = () => { _ignoreNextRemote = true; };
-  window._setLastLocalSave = ts => { _lastLocalSave = ts; };
-
-  onValue(ref(db, 'franez'), snapshot => {
-    if (_ignoreNextRemote) { _ignoreNextRemote = false; return; }
-    const val = snapshot.val();
-    if (!val) return;
-    const remoteTs = val._ts || 0;
-    if (remoteTs > _lastLocalSave + 3000) {
-      if (typeof window.mergeRemoteState === 'function') {
-        window.mergeRemoteState(val);
-      }
-    }
-  });
-</script>
 </head>
 <body>
 <div id="error-log" style="position:fixed;bottom:0;left:0;right:0;background:red;color:white;font-size:12px;padding:8px;z-index:9999;display:none;max-height:200px;overflow:auto"></div>
@@ -64,7 +27,7 @@ window.onerror = function(msg, src, line) {
 </script>
 <!-- ██ BLOQUE:NAV-INICIO ██ -->
 <nav id="nav">
-  <span id="nav-title">&#9889; Franez v2.6.7</span> <span class="prestar-badge">PRESTAR</span>
+  <span id="nav-title">&#9889; Franez v3.0.9 <span class="prestar-badge">PRESTAR</span></span>
   <button class="nav-btn active" onclick="showPanel('pedidos',this)">Pedidos</button>
   <button class="nav-btn ai-btn" onclick="showPanel('ia',this)">&#10024; Pedido IA</button>
   <button class="nav-btn" onclick="showPanel('visitas',this)" style="display:none">&#128205; Visitas</button>
@@ -728,8 +691,6 @@ window.onerror = function(msg, src, line) {
           <button class="btn btn-danger btn-sm" onclick="borrarTipo('stock')">Stock</button>
           <button class="btn btn-danger btn-sm" onclick="borrarTipo('historial')">Historial</button>
           <button class="btn btn-danger btn-sm" onclick="borrarTipo('pedidos')">Pedidos activos</button>
-          <button class="btn" style="background:#1e3a5f;color:#93c5fd;border:1px solid #3b82f6" onclick="subirDatosFirebase()">☁️ SUBIR DATOS A LA NUBE</button>
-          <button class="btn" style="background:#1e3a5f;color:#93c5fd;border:1px solid #3b82f6" onclick="localStorage.removeItem('franez_ts');location.reload()">⬇️ BAJAR DATOS DE LA NUBE</button>
           <button class="btn" style="background:#450a0a;color:#fca5a5;border:1px solid var(--red)" onclick="borrarTodo()">BORRAR TODO</button>
         </div>
       </div>
@@ -770,15 +731,18 @@ window.onerror = function(msg, src, line) {
 <div class="panel" id="panel-acerca">
   <div class="card" style="max-width:700px;margin:0 auto">
     <div class="about-hero">
-      <div class="about-title">Franez Pedidos</div><div class="about-prestar">VERSIÓN PRESTAR</div>
-      <div class="about-version">v2.6.7</div>
+      <div class="about-title">Franez Pedidos</div>
+      <div class="about-version" id="about-version">v3.0.9</div>
+      <div class="about-prestar">VERSIÓN PRESTAR</div>
       <div class="about-desc">Gestor de pedidos comerciales profesional para delegados de ventas</div>
       <div class="about-author">Desarrollado por <strong>Francisco N&uacute;&ntilde;ez Vegas</strong> &bull; 2025</div>
     </div>
     <div class="card-title">Historial de versiones</div>
+    <div id="about-changelog">
     <div class="changelog-item"><span class="changelog-version">v2.6.7</span><span class="changelog-desc">Importación automática desde contrato PDF Nutergia. Botón 📄 en sección Clientes: sube el PDF firmado y relleno, extrae los datos, valida el NIF/CIF, clasifica teléfono/móvil y verifica el IBAN. Popup de revisión antes de guardar.</span></div>
     <div class="changelog-item"><span class="changelog-version">v2.6.6</span><span class="changelog-desc">Fix botón borrar historial. Pestaña Visitas oculta. Popup inicio del día muestra contratos que vencen próximamente. Envío y recepción de pedidos por WhatsApp.</span></div>
     <div class="changelog-item"><span class="changelog-version">v2.6.5</span><span class="changelog-desc">Sincronización en tiempo real corregida definitivamente.</span></div>
+    </div>
     <div class="about-legal">
       &copy; 2025 Francisco N&uacute;&ntilde;ez Vegas. Todos los derechos reservados.
     </div>

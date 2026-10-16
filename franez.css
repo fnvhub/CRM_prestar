@@ -275,28 +275,6 @@ textarea{resize:vertical;min-height:80px}
 #panel-visitas .semaforo-gris{background:var(--slate2);border-left-color:var(--border);color:var(--text2);}
 @media(max-width:900px){#panel-visitas .briefing-grid{grid-template-columns:1fr!important;}}
 @media(max-width:640px){#visitas-tabs-container{flex-direction:column;}#visitas-tabs-container .visita-tab-btn{min-width:100%!important;}#semana-dias-grid{grid-template-columns:1fr!important;}}
-
-/* Identificación discreta de la copia PRESTAR */
-.prestar-badge{
-  display:inline-block;
-  margin-left:6px;
-  padding:2px 6px;
-  border:1px solid rgba(255,255,255,.22);
-  border-radius:5px;
-  font-size:9px;
-  font-weight:700;
-  letter-spacing:.6px;
-  vertical-align:middle;
-  opacity:.75;
-}
-.about-prestar{
-  display:inline-block;
-  margin-top:6px;
-  padding:3px 7px;
-  border:1px solid rgba(255,255,255,.18);
-  border-radius:5px;
-  font-size:10px;
-  font-weight:700;
-  letter-spacing:.8px;
-  opacity:.7;
-}
+/* IDENTIDAD PRESTAR — discreta */
+.prestar-badge{display:inline-block;margin-left:6px;padding:2px 6px;border:1px solid rgba(255,255,255,.22);border-radius:5px;font-size:9px;font-weight:700;letter-spacing:.6px;vertical-align:middle;opacity:.75}
+.about-prestar{display:inline-block;margin-top:6px;padding:3px 7px;border:1px solid rgba(255,255,255,.18);border-radius:5px;font-size:10px;font-weight:700;letter-spacing:.8px;opacity:.7}
