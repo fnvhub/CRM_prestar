@@ -90,6 +90,23 @@ function toast(msg,type){
 // ██ BLOQUE:TOAST-FIN ██
 
 // ██ BLOQUE:LOCAL-STORAGE-INICIO ██
+function mergeById(local, remote) {
+  if (!Array.isArray(remote)) return local;
+  if (!Array.isArray(local)) return remote;
+  var merged = local.slice();
+  remote.forEach(function(rItem) {
+    if (!rItem || !rItem.id) return;
+    var idx = merged.findIndex(function(l) { return l.id === rItem.id; });
+    if (idx === -1) {
+      merged.push(rItem);
+    } else {
+      var lTs = merged[idx]._ts || 0;
+      var rTs = rItem._ts || 0;
+      if (rTs > lTs) merged[idx] = rItem;
+    }
+  });
+  return merged;
+}
 function saveState(){
   var now = Date.now();
   localStorage.setItem('clientes',JSON.stringify(state.clientes));
@@ -103,9 +120,32 @@ function saveState(){
   localStorage.setItem('config',JSON.stringify(state.config));
   localStorage.setItem('acumuladoMensual',JSON.stringify(state.acumuladoMensual||{}));
   localStorage.setItem('franez_ts', now);
+  // Subir a Firebase si está disponible
+  if (window._fbDb && window._fbSet && window._fbRef) {
+    try {
+      var payload = {
+        clientes: state.clientes,
+        productos: state.productos,
+        ofertas: state.ofertas,
+        historial: state.historial,
+        stock: state.stock,
+        delegado: state.delegado||'',
+        campanas: state.campanas,
+        config: state.config,
+        acumuladoMensual: state.acumuladoMensual||{},
+        _ts: now
+      };
+      if (window._fbIgnoreNext) window._fbIgnoreNext();
+      if (window._setLastLocalSave) window._setLastLocalSave(now);
+      window._fbSet(window._fbRef(window._fbDb, 'franez'), payload);
+    } catch(e) { console.warn('Firebase saveState error:', e); }
+  }
 }
 function savePedidos(){
   localStorage.setItem('pedidos',JSON.stringify(state.pedidos));
+  if (window._fbDb && window._fbSet && window._fbRef) {
+    try { window._fbSet(window._fbRef(window._fbDb, 'franez/pedidos'), state.pedidos); } catch(e){}
+  }
 }
 function loadState(){
   function tryParse(key,def){try{var v=localStorage.getItem(key);return v?JSON.parse(v):def;}catch(e){return def;}}
@@ -136,6 +176,52 @@ function loadState(){
   var cfgDef={umbralUnidades:12,umbralPedidos:2,margenMinDto:3,diasContrato:21};
   state.config=Object.assign({},cfgDef,tryParse('config',{}));
   state.acumuladoMensual=tryParse('acumuladoMensual',{});
+  // Merge con Firebase DESPUÉS de cargar localStorage (evita que tryParse machaque el merge)
+  if (window._fbDb && window._fbGet && window._fbRef) {
+    window._fbGet(window._fbRef(window._fbDb, 'franez')).then(function(snapshot) {
+      if (!snapshot.exists()) return;
+      var remote = snapshot.val();
+      var localTs = parseInt(localStorage.getItem('franez_ts')||'0');
+      var remoteTs = remote._ts || 0;
+      var changed = false;
+      // Historial y campañas: siempre mergear sin importar timestamps
+      if (remote.historial && Array.isArray(remote.historial)) {
+        var mh = mergeById(state.historial, remote.historial);
+        if (mh.length !== state.historial.length) { state.historial = mh; changed = true; }
+      }
+      if (remote.campanas && Array.isArray(remote.campanas)) {
+        var mc = mergeById(state.campanas, remote.campanas);
+        if (mc.length !== state.campanas.length) { state.campanas = mc; changed = true; }
+      }
+      // Resto: solo si Firebase es más reciente
+      if (remoteTs > localTs) {
+        if (remote.clientes) state.clientes = mergeById(state.clientes, remote.clientes);
+        if (remote.productos) state.productos = mergeById(state.productos, remote.productos);
+        if (remote.ofertas) state.ofertas = mergeById(state.ofertas, remote.ofertas);
+        if (remote.stock) state.stock = Object.assign({}, state.stock, remote.stock);
+        if (remote.delegado) state.delegado = remote.delegado;
+        if (remote.config) state.config = Object.assign({}, state.config, remote.config);
+        if (remote.acumuladoMensual) state.acumuladoMensual = Object.assign({}, state.acumuladoMensual, remote.acumuladoMensual);
+        localStorage.setItem('franez_ts', remoteTs);
+        changed = true;
+      }
+      if (changed) {
+        localStorage.setItem('clientes',JSON.stringify(state.clientes));
+        localStorage.setItem('productos',JSON.stringify(state.productos));
+        localStorage.setItem('ofertas',JSON.stringify(state.ofertas));
+        localStorage.setItem('historial',JSON.stringify(state.historial));
+        localStorage.setItem('campanas',JSON.stringify(state.campanas));
+        localStorage.setItem('stock',JSON.stringify(state.stock));
+        localStorage.setItem('delegado',state.delegado||'');
+        localStorage.setItem('config',JSON.stringify(state.config));
+        localStorage.setItem('acumuladoMensual',JSON.stringify(state.acumuladoMensual));
+        renderClientesList && renderClientesList();
+        renderHistorial && renderHistorial();
+        renderStats && renderStats();
+        toast('✓ Sincronizado con la nube');
+      }
+    }).catch(function(e){ console.warn('Firebase loadState error:', e); });
+  }
 }
 
 // ██ BLOQUE:LOCAL-STORAGE-FIN ██
@@ -1362,6 +1448,9 @@ function borrarPedidoHistorial(id){
   if(!confirm('¿Borrar este pedido del historial? No se puede deshacer.')) return;
   state.historial=state.historial.filter(function(h){return (h.id||h.ref)!==(id);});
   localStorage.setItem("historial",JSON.stringify(state.historial));
+  if(window._fbDb&&window._fbSet&&window._fbRef){
+    try{if(window._fbIgnoreNext)window._fbIgnoreNext();window._fbSet(window._fbRef(window._fbDb,"franez/historial"),state.historial);}catch(e){}
+  }
   renderHistorial();
   toast("Pedido eliminado del historial");
 }
@@ -1693,6 +1782,45 @@ function borrarTipo(tipo){
   if(!confirm('\u00bfEliminar todos los datos de '+tipo+'?')) return;
   if(tipo==='clientes') state.clientes=[];else if(tipo==='productos') state.productos=[];else if(tipo==='ofertas'){state.ofertas=[];refreshOfertaSelect();}else if(tipo==='stock'){state.stock={};updateStockBadge();}else if(tipo==='historial') state.historial=[];else if(tipo==='pedidos'){state.pedidos=[{clienteId:'',ofertaId:'',lineas:[],portes:'auto',dtoActual:0,notas:''},{clienteId:'',ofertaId:'',lineas:[],portes:'auto',dtoActual:0,notas:''},{clienteId:'',ofertaId:'',lineas:[],portes:'auto',dtoActual:0,notas:''}];renderCurrentOrder();}
   saveState();renderStats();toast(tipo+' eliminados');
+}
+function subirDatosFirebase(){
+  if (!window._fbDb || !window._fbSet || !window._fbRef || !window._fbGet) {
+    toast('⚠️ Firebase no disponible aún, espera unos segundos y vuelve a intentarlo');
+    return;
+  }
+  if (!confirm('¿Sincronizar tus datos con la nube? Se mezclarán con los de los demás dispositivos.')) return;
+  toast('⏳ Mezclando datos con la nube...');
+  window._fbGet(window._fbRef(window._fbDb, 'franez')).then(function(snapshot) {
+    var now = Date.now();
+    if (snapshot.exists()) {
+      var remote = snapshot.val();
+      if (remote.historial && Array.isArray(remote.historial)) state.historial = mergeById(state.historial, remote.historial);
+      if (remote.campanas && Array.isArray(remote.campanas)) state.campanas = mergeById(state.campanas, remote.campanas);
+      if (remote.clientes && Array.isArray(remote.clientes)) state.clientes = mergeById(state.clientes, remote.clientes);
+      if (remote.productos && Array.isArray(remote.productos)) state.productos = mergeById(state.productos, remote.productos);
+      if (remote.ofertas && Array.isArray(remote.ofertas)) state.ofertas = mergeById(state.ofertas, remote.ofertas);
+      if (remote.stock) state.stock = Object.assign({}, remote.stock, state.stock);
+    }
+    localStorage.setItem('clientes', JSON.stringify(state.clientes));
+    localStorage.setItem('productos', JSON.stringify(state.productos));
+    localStorage.setItem('ofertas', JSON.stringify(state.ofertas));
+    localStorage.setItem('historial', JSON.stringify(state.historial));
+    localStorage.setItem('campanas', JSON.stringify(state.campanas));
+    localStorage.setItem('stock', JSON.stringify(state.stock));
+    localStorage.setItem('franez_ts', now);
+    var payload = {
+      clientes: state.clientes, productos: state.productos, ofertas: state.ofertas,
+      historial: state.historial, stock: state.stock, delegado: state.delegado||'',
+      campanas: state.campanas, config: state.config, acumuladoMensual: state.acumuladoMensual||{}, _ts: now
+    };
+    if (window._fbIgnoreNext) window._fbIgnoreNext();
+    return window._fbSet(window._fbRef(window._fbDb, 'franez'), payload);
+  }).then(function(){
+    renderHistorial && renderHistorial();
+    renderClientesList && renderClientesList();
+    renderStats && renderStats();
+    toast('☁️ Datos mezclados y subidos ✓');
+  }).catch(function(e){ toast('⚠️ Error: ' + e.message); });
 }
 function borrarTodo(){if(!confirm('Esta accion es IRREVERSIBLE. \u00bfEliminar TODOS los datos?')) return;localStorage.clear();loadState();saveState();refreshOfertaSelect();renderCurrentOrder();renderStats();updateStockBadge();toast('Todos los datos eliminados');}
 
@@ -2844,6 +2972,11 @@ function importarDesdeMensaje() {
       state.historial.sort(function(a,b){ return (b.fecha||'').localeCompare(a.fecha||''); });
       if (state.historial.length > 20) state.historial = state.historial.slice(0, 20);
       localStorage.setItem('historial', JSON.stringify(state.historial));
+      if (window._fbIgnoreNext) window._fbIgnoreNext();
+      if (window._setLastLocalSave) window._setLastLocalSave(Date.now());
+      if (window._fbDb && window._fbSet && window._fbRef) {
+        try { window._fbSet(window._fbRef(window._fbDb, 'franez/historial'), state.historial); } catch(e) {}
+      }
       renderHistorial && renderHistorial();
       toast('✓ ' + nuevos + ' pedido(s) importado(s)');
     } else {
@@ -2853,6 +2986,67 @@ function importarDesdeMensaje() {
 }
 // ██ BLOQUE:WHATSAPP-SYNC-FIN ██
 
+// ██ BLOQUE:SYNC-TIEMPO-REAL-INICIO ██
+// Recibe datos de Firebase cuando otro dispositivo guarda
+// Solo aplica si los datos remotos son más nuevos que los locales
+window.mergeRemoteState = function(remote) {
+  if (!remote) return;
+  var localTs = parseInt(localStorage.getItem('franez_ts') || '0');
+  var remoteTs = remote._ts || 0;
+  // Si los datos remotos tienen menos de 3 segundos los ignoramos
+  // para evitar que el mismo dispositivo procese lo que acaba de subir
+  var changed = false;
+
+  // Historial y campañas: siempre mergear (pueden crecer en cualquier dispositivo)
+  if (remote.historial && Array.isArray(remote.historial)) {
+    var mh = mergeById(state.historial, remote.historial);
+    if (mh.length !== state.historial.length) { state.historial = mh; changed = true; }
+  }
+  if (remote.campanas && Array.isArray(remote.campanas)) {
+    var mc = mergeById(state.campanas, remote.campanas);
+    if (mc.length !== state.campanas.length) { state.campanas = mc; changed = true; }
+  }
+
+  // Resto de datos: solo si Firebase es más nuevo
+  if (remoteTs > localTs) {
+    if (remote.clientes && Array.isArray(remote.clientes)) { state.clientes = mergeById(state.clientes, remote.clientes); changed = true; }
+    if (remote.productos && Array.isArray(remote.productos)) { state.productos = mergeById(state.productos, remote.productos); changed = true; }
+    if (remote.ofertas && Array.isArray(remote.ofertas)) { state.ofertas = mergeById(state.ofertas, remote.ofertas); changed = true; }
+    if (remote.stock) { state.stock = Object.assign({}, state.stock, remote.stock); changed = true; }
+    if (remote.delegado) { state.delegado = remote.delegado; }
+    if (remote.config) { state.config = Object.assign({}, state.config, remote.config); }
+    if (remote.acumuladoMensual) { state.acumuladoMensual = Object.assign({}, state.acumuladoMensual, remote.acumuladoMensual); changed = true; }
+    if (remote.rutaDia) { state.rutaDia = remote.rutaDia; changed = true; }
+    localStorage.setItem('franez_ts', remoteTs);
+  }
+
+  if (!changed) return;
+
+  // Guardar en localStorage
+  localStorage.setItem('clientes', JSON.stringify(state.clientes));
+  localStorage.setItem('productos', JSON.stringify(state.productos));
+  localStorage.setItem('ofertas', JSON.stringify(state.ofertas));
+  localStorage.setItem('historial', JSON.stringify(state.historial));
+  localStorage.setItem('campanas', JSON.stringify(state.campanas));
+  localStorage.setItem('stock', JSON.stringify(state.stock));
+  localStorage.setItem('acumuladoMensual', JSON.stringify(state.acumuladoMensual || {}));
+
+  // Refrescar la pantalla que esté visible en ese momento
+  var panelActivo = document.querySelector('.panel.active');
+  var panelId = panelActivo ? panelActivo.id : '';
+  if (panelId === 'panel-clientes') { renderClientesList && renderClientesList(); }
+  else if (panelId === 'panel-productos') { renderProductosList && renderProductosList(); }
+  else if (panelId === 'panel-ofertas') { renderOfertasList && renderOfertasList(); }
+  else if (panelId === 'panel-stock') { renderStockList && renderStockList(); }
+  else if (panelId === 'panel-historial') { renderHistorial && renderHistorial(); }
+  else if (panelId === 'panel-escalado') { renderEscalado && renderEscalado(); }
+  else if (panelId === 'panel-campanas') { renderCampanas && renderCampanas(); }
+  else if (panelId === 'panel-ajustes') { renderStats && renderStats(); }
+  else if (panelId === 'panel-visitas') { initVisitasPanel && initVisitasPanel(); }
+
+  toast('☁️ Datos actualizados desde otro dispositivo');
+};
+// ██ BLOQUE:SYNC-TIEMPO-REAL-FIN ██
 
 // ██ BLOQUE:IMPORTAR-CONTRATO-PDF-INICIO ██
 
