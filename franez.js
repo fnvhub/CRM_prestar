@@ -1717,7 +1717,54 @@ function exportarBackup(){
   if(navigator.share&&navigator.canShare){var file=new File([blob],fname,{type:'application/json'});if(navigator.canShare({files:[file]})){navigator.share({files:[file],title:'Backup Franez',text:'Backup de datos Franez CRM'}).then(function(){toast('Backup compartido \u2713');}).catch(function(err){if(err.name!=='AbortError') descargarBackup(blob,fname);});return;}}
   descargarBackup(blob,fname);
 }
-function descargarBackup(blob,fname){var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fname;a.click();toast('Backup descargado \u2713');}
+function descargarBackup(blob,fname){var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fname;a.click();setTimeout(function(){URL.revokeObjectURL(a.href);},1000);toast('Backup descargado \u2713');}
+function crearDatosBackup(){
+  return {
+    fechaBackup:new Date().toISOString(),
+    clientes:state.clientes,
+    productos:state.productos,
+    ofertas:state.ofertas,
+    pedidos:state.pedidos,
+    historial:state.historial,
+    stock:state.stock,
+    delegado:state.delegado,
+    campanas:state.campanas,
+    config:state.config,
+    rutaDia:state.rutaDia,
+    acumuladoMensual:state.acumuladoMensual
+  };
+}
+function backupAutomaticoManana(){
+  var ahora=new Date();
+  var hoy=ahora.getFullYear()+'-'+String(ahora.getMonth()+1).padStart(2,'0')+'-'+String(ahora.getDate()).padStart(2,'0');
+  if(localStorage.getItem('franez_backup_automatico_dia')===hoy) return;
+  function hacerBackup(){
+    var d=new Date();
+    var fecha=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+    if(localStorage.getItem('franez_backup_automatico_dia')===fecha) return;
+    var data=crearDatosBackup();
+    var blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+    var a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download='backup_franez_'+fecha+'.json';
+    a.style.display='none';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function(){URL.revokeObjectURL(a.href);if(a.parentNode)a.parentNode.removeChild(a);},1500);
+    localStorage.setItem('franez_backup_automatico_dia',fecha);
+    setTimeout(function(){toast('Copia de seguridad automática guardada \u2713');},300);
+  }
+  var h=ahora.getHours();
+  if(h>=6 && h<14){
+    setTimeout(hacerBackup,1200);
+  }else if(h<6){
+    var siguiente=new Date(ahora);siguiente.setHours(6,0,0,0);
+    setTimeout(hacerBackup,Math.max(1000,siguiente.getTime()-ahora.getTime()));
+  }else{
+    var siguienteManana=new Date(ahora);siguienteManana.setDate(siguienteManana.getDate()+1);siguienteManana.setHours(6,0,0,0);
+    setTimeout(hacerBackup,Math.max(1000,siguienteManana.getTime()-ahora.getTime()));
+  }
+}
 function importarBackup(e){
   var file=e.target.files[0];if(!file) return;
   var reader=new FileReader();
@@ -2761,6 +2808,7 @@ function abrirGemini(){
 }
 function init(){
   loadState();loadRuta();
+  backupAutomaticoManana();
   // PRECARGA CAMPAÑAS NUTERGIA 2026
   (function(){
     if(!state.campanas||state.campanas.length===0){
