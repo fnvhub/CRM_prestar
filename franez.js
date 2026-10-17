@@ -90,6 +90,21 @@ function toast(msg,type){
 // ██ BLOQUE:TOAST-FIN ██
 
 // ██ BLOQUE:LOCAL-STORAGE-INICIO ██
+function mergeById(local, remote) {
+  if (!Array.isArray(remote)) return local;
+  if (!Array.isArray(local)) return remote;
+  var merged = local.slice();
+  remote.forEach(function(rItem) {
+    if (!rItem || !rItem.id) return;
+    var idx = merged.findIndex(function(l) { return l.id === rItem.id; });
+    if (idx === -1) merged.push(rItem);
+    else {
+      var lTs = merged[idx]._ts || 0, rTs = rItem._ts || 0;
+      if (rTs > lTs) merged[idx] = rItem;
+    }
+  });
+  return merged;
+}
 function saveState(){
   var now = Date.now();
   localStorage.setItem('clientes',JSON.stringify(state.clientes));
@@ -102,11 +117,9 @@ function saveState(){
   localStorage.setItem('campanas',JSON.stringify(state.campanas));
   localStorage.setItem('config',JSON.stringify(state.config));
   localStorage.setItem('acumuladoMensual',JSON.stringify(state.acumuladoMensual||{}));
-  localStorage.setItem('franez_ts', now);
+  localStorage.setItem('franez_ts',now);
 }
-function savePedidos(){
-  localStorage.setItem('pedidos',JSON.stringify(state.pedidos));
-}
+function savePedidos(){localStorage.setItem('pedidos',JSON.stringify(state.pedidos));}
 function loadState(){
   function tryParse(key,def){try{var v=localStorage.getItem(key);return v?JSON.parse(v):def;}catch(e){return def;}}
   state.clientes=tryParse('clientes',[]);
@@ -115,9 +128,9 @@ function loadState(){
   var p=tryParse('pedidos',[]);
   if(!Array.isArray(p)||p.length<3){
     state.pedidos=[{clienteId:'',ofertaId:'',lineas:[],portes:'auto',dtoActual:0,notas:''},{clienteId:'',ofertaId:'',lineas:[],portes:'auto',dtoActual:0,notas:''},{clienteId:'',ofertaId:'',lineas:[],portes:'auto',dtoActual:0,notas:''}];
-  } else {
+  }else{
     state.pedidos=p;
-    for(var i=0;i<3;i++){if(!state.pedidos[i]) state.pedidos[i]={clienteId:'',ofertaId:'',lineas:[],portes:'auto',dtoActual:0,notas:''};}
+    for(var i=0;i<3;i++)if(!state.pedidos[i])state.pedidos[i]={clienteId:'',ofertaId:'',lineas:[],portes:'auto',dtoActual:0,notas:''};
   }
   state.historial=tryParse('historial',[]);
   state.stock=tryParse('stock',{});
@@ -126,11 +139,9 @@ function loadState(){
   (function(){
     var hoy=new Date(),cutoff=10*24*60*60*1000;
     state.campanas=state.campanas.filter(function(camp){
-      if(!camp.campanaFin) return true;
-      var p=camp.campanaFin.split('-');
-      if(p.length!==3) return true;
-      var fin=new Date(+p[0],+p[1]-1,+p[2]);
-      return (hoy-fin)<cutoff;
+      if(!camp.campanaFin)return true;
+      var p=camp.campanaFin.split('-');if(p.length!==3)return true;
+      var fin=new Date(+p[0],+p[1]-1,+p[2]);return (hoy-fin)<cutoff;
     });
   })();
   var cfgDef={umbralUnidades:12,umbralPedidos:2,margenMinDto:3,diasContrato:21};

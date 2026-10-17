@@ -7,7 +7,8 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Franez 3.0.11 Standalone</title>
+<link rel="manifest" href="./manifest.json">
+<title>Franez v3.0.9</title>
 <style>
 html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0f172a}
 #app-frame{display:block;width:100%;height:100%;border:0}
@@ -33,9 +34,9 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0f172a}
     }
 
     /* V3: versión */
-    d.title='Franez 3.0.11 Standalone';
+    d.title='Franez v3.0.9';
     var navTitle=d.getElementById('nav-title');
-    if(navTitle)navTitle.textContent='⚡ Franez 3.0.11 Standalone';
+    if(navTitle)navTitle.textContent='⚡ Franez v3.0.9';
 
     /* Evitar duplicados */
     if(d.getElementById('nav-avisos-v3')){
@@ -158,13 +159,13 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0f172a}
 
     /* Reflejar v3 también en Acerca de */
     var aboutVersion=d.getElementById('about-version');
-    if(aboutVersion)aboutVersion.textContent='v3.0.11';
+    if(aboutVersion)aboutVersion.textContent='v3.0.9';
 
     var aboutChange=d.getElementById('about-changelog');
     if(aboutChange){
       var item=d.createElement('div');
       item.className='changelog-item';
-      item.innerHTML='<span class="changelog-version">v3.0.11</span><span class="changelog-desc">Nueva pestaña Avisos. Se elimina el popup de inicio. Inicio de la etapa 3: el desarrollo técnico de Franez pasa a estar bajo el mando de ChatGPT.</span>';
+      item.innerHTML='<span class="changelog-version">v3.0.9</span><span class="changelog-desc">Nueva pestaña Avisos. Se elimina el popup de inicio. Inicio de la etapa 3: el desarrollo técnico de Franez pasa a estar bajo el mando de ChatGPT.</span>';
       aboutChange.insertBefore(item,aboutChange.firstChild);
     }
 
@@ -190,7 +191,7 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0f172a}
     var st=w.state||{};
     return {
       backupVersion:'1',
-      appVersion:'3.0.11',
+      appVersion:'3.0.9',
       fechaBackup:new Date().toISOString(),
       clientes:Array.isArray(st.clientes)?st.clientes:[],
       productos:Array.isArray(st.productos)?st.productos:[],
@@ -219,7 +220,7 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0f172a}
   async function esperarDatosCRM(){
     var w=frame.contentWindow;
     for(var i=0;i<40;i++){
-      if(w.state && Array.isArray(w.state.clientes))return true;
+      try{if(w.state&&Array.isArray(w.state.clientes))return true;}catch(e){}
       await new Promise(function(r){setTimeout(r,250);});
     }
     return !!(w.state&&Array.isArray(w.state.clientes));
