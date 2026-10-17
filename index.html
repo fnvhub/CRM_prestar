@@ -843,5 +843,100 @@ window.onerror = function(msg, src, line) {
   setTimeout(function(){ocultarPopup();renderAvisoPrestamo();},2000);
 })();
 </script>
+
+<!-- ██ BLOQUE:WHATSAPP-CLIENTE-INICIO ██ -->
+<script>
+(function(){
+  var WA_MSG_KEY='franez_mensaje_compartir_pedido_v313';
+  var WA_MSG_DEFAULT='Te envío este resumen únicamente para que puedas comprobar que el pedido que he pasado es correcto. Si ves cualquier error o algo que no coincida, por favor, házmelo saber. Muchas gracias.';
+
+  function waClienteActual(){
+    var p=window.state&&Array.isArray(window.state.pedidos)?window.state.pedidos[window.currentOrder||0]:null;
+    return p&&typeof window.getClienteById==='function'?window.getClienteById(p.clienteId):null;
+  }
+  function waMensaje(){return localStorage.getItem(WA_MSG_KEY)||WA_MSG_DEFAULT;}
+  function waTelefono(v){
+    var s=String(v||'').replace(/\D/g,'');
+    if(!s)return '';
+    if(s.indexOf('0034')===0)s=s.substring(4);
+    if(s.indexOf('34')===0&&s.length===11)return s;
+    if(s.length===9)return '34'+s;
+    return s;
+  }
+  function waTextoPedido(){
+    var p=window.state&&Array.isArray(window.state.pedidos)?window.state.pedidos[window.currentOrder||0]:null;
+    if(!p||!Array.isArray(p.lineas)||!p.lineas.length){
+      if(window.toast)window.toast('El pedido no tiene líneas.','err');
+      return '';
+    }
+    var lineas=p.lineas.map(function(l){
+      var pvp=typeof window.fmNum==='function'?window.fmNum(l.pvp):Number(l.pvp||0).toFixed(2).replace('.',',');
+      return '• '+String(l.nombre||'Producto')+' — '+(parseInt(l.uds)||0)+' uds. — PVP '+pvp+' €';
+    }).join('\n');
+    return waMensaje()+'\n\n'+lineas+'\n\nLos precios indicados son PVP.';
+  }
+  function waCopiar(texto){
+    if(!texto)return;
+    function fallback(){
+      var ta=document.createElement('textarea');ta.value=texto;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');}catch(e){}ta.remove();
+      if(window.toast)window.toast('📋 Pedido copiado. Pégalo en WhatsApp.','ok');
+    }
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(texto).then(function(){if(window.toast)window.toast('📋 Pedido copiado. Pégalo en WhatsApp.','ok');}).catch(fallback);else fallback();
+  }
+  function waAbrir(){
+    var c=waClienteActual(),texto=waTextoPedido();
+    if(!texto)return;
+    var telefono=waTelefono(c&&(c.movil||c.telefono));
+    if(!telefono){
+      waCopiar(texto);
+      if(window.toast)window.toast('⚠️ El cliente no tiene teléfono en su ficha.','err');
+      return;
+    }
+
+    // En Android se intenta primero WhatsApp Business. Si no está instalado,
+    // se cae automáticamente a WhatsApp normal.
+    var intent='intent://send?phone='+telefono+'&text='+encodeURIComponent(texto)+'#Intent;scheme=whatsapp;package=com.whatsapp.w4b;end';
+    var normal='https://wa.me/'+telefono+'?text='+encodeURIComponent(texto);
+    var salio=false;
+    function cancelarFallback(){salio=true;document.removeEventListener('visibilitychange',vis);window.removeEventListener('pagehide',vis);}
+    function vis(){if(document.hidden)cancelarFallback();}
+    document.addEventListener('visibilitychange',vis);
+    window.addEventListener('pagehide',vis);
+    window.location.href=intent;
+    setTimeout(function(){
+      if(!salio){cancelarFallback();window.location.href=normal;}
+    },1400);
+  }
+  function instalarWA(){
+    if(document.getElementById('btn-wa-pedido-v313'))return;
+    var pdf=document.querySelector('button[onclick*="compartirNota"]');
+    if(!pdf)return;
+    var b=document.createElement('button');
+    b.id='btn-wa-pedido-v313';b.className='btn btn-success btn-lg';
+    b.innerHTML='📱 Compartir pedido por WhatsApp';
+    b.title='Usa el teléfono de la ficha del cliente. Prioridad: WhatsApp Business.';
+    b.onclick=waAbrir;
+    pdf.parentNode.insertBefore(b,pdf.nextSibling);
+    var cp=document.createElement('button');
+    cp.id='btn-copy-wa-pedido-v313';cp.className='btn btn-ghost btn-sm';cp.style.width='100%';cp.textContent='📋 Copiar pedido para WhatsApp';cp.onclick=function(){waCopiar(waTextoPedido());};
+    b.parentNode.insertBefore(cp,b.nextSibling);
+  }
+  function instalarAjusteWA(){
+    if(document.getElementById('ajuste-mensaje-compartir-v313'))return;
+    var panel=document.getElementById('panel-ajustes');
+    if(!panel)return;
+    var card=document.createElement('div');card.id='ajuste-mensaje-compartir-v313';card.className='card';card.style.marginTop='14px';
+    card.innerHTML='<div class="card-title">✉️ Mensaje al compartir pedidos</div><div style="font-size:13px;color:var(--text3);line-height:1.5;margin-bottom:10px">Este texto se añadirá al compartir el pedido por WhatsApp. Puedes modificarlo cuando quieras.</div><textarea id="mensaje-compartir-v313" style="min-height:120px"></textarea><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><button class="btn btn-primary btn-sm" id="guardar-mensaje-compartir-v313">Guardar mensaje</button><button class="btn btn-ghost btn-sm" id="restaurar-mensaje-compartir-v313">Restaurar texto original</button></div>';
+    panel.appendChild(card);
+    var ta=document.getElementById('mensaje-compartir-v313');ta.value=waMensaje();
+    document.getElementById('guardar-mensaje-compartir-v313').onclick=function(){localStorage.setItem(WA_MSG_KEY,ta.value.trim()||WA_MSG_DEFAULT);if(window.toast)window.toast('✉️ Mensaje guardado ✓','ok');};
+    document.getElementById('restaurar-mensaje-compartir-v313').onclick=function(){ta.value=WA_MSG_DEFAULT;localStorage.setItem(WA_MSG_KEY,WA_MSG_DEFAULT);if(window.toast)window.toast('✉️ Mensaje restaurado ✓','ok');};
+  }
+  function arrancar(){setTimeout(function(){instalarWA();instalarAjusteWA();setTimeout(function(){instalarWA();instalarAjusteWA();},900);},250);}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',arrancar);else arrancar();
+})();
+</script>
+<!-- ██ BLOQUE:WHATSAPP-CLIENTE-FIN ██ -->
+
 </body>
 </html>

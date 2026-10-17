@@ -1,7 +1,8 @@
 {
-  "version": "3.0.12",
+  "version": "3.0.13",
   "fecha": "2026-10-17",
   "cambios": [
+    "WhatsApp para clientes: abre WhatsApp Business prioritariamente y, si no está disponible, WhatsApp normal, usando automáticamente el teléfono de la ficha del cliente y el pedido actual.",
     "3.0.12 — Se elimina el popup de inicio de contratos.",
     "Se añade la pestaña Aviso para consultar los contratos próximos a vencer sin ventanas emergentes.",
     "El aviso muestra el mismo criterio de vencimiento configurado en Ajustes y mantiene un contador de contratos pendientes.",
@@ -21,6 +22,12 @@
     "Se mantiene un botón Copiar pedido para WhatsApp como plan B si el enlace directo no funciona."
   ],
   "historial": [
+    {
+      "version": "3.0.13",
+      "cambios": [
+        "WhatsApp para clientes: abre WhatsApp Business prioritariamente y, si no está disponible, WhatsApp normal, usando automáticamente el teléfono de la ficha del cliente y el pedido actual."
+      ]
+    },
     {
       "version": "3.0.12",
       "fecha": "2026-10-17",

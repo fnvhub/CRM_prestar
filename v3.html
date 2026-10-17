@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="manifest" href="./manifest.json">
-<title>Franez v3.0.11 · PRÉSTAMO</title>
+<title>Franez v3.0.9</title>
 <style>
 html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0f172a}
 #app-frame{display:block;width:100%;height:100%;border:0}
@@ -34,9 +34,9 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0f172a}
     }
 
     /* V3: versión */
-    d.title='Franez v3.0.11 · PRÉSTAMO';
+    d.title='Franez v3.0.9';
     var navTitle=d.getElementById('nav-title');
-    if(navTitle)navTitle.textContent='⚡ Franez v3.0.11 · PRÉSTAMO';
+    if(navTitle)navTitle.textContent='⚡ Franez v3.0.9';
 
     /* Evitar duplicados */
     if(d.getElementById('nav-avisos-v3')){
@@ -159,13 +159,13 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0f172a}
 
     /* Reflejar v3 también en Acerca de */
     var aboutVersion=d.getElementById('about-version');
-    if(aboutVersion)aboutVersion.textContent='v3.0.11';
+    if(aboutVersion)aboutVersion.textContent='v3.0.9';
 
     var aboutChange=d.getElementById('about-changelog');
     if(aboutChange){
       var item=d.createElement('div');
       item.className='changelog-item';
-      item.innerHTML='<span class="changelog-version">v3.0.11</span><span class="changelog-desc">Versión de PRÉSTAMO independiente. Se mantiene Avisos sin popup de inicio, backup automático diario, WhatsApp editable y campañas 2027.</span>';
+      item.innerHTML='<span class="changelog-version">v3.0.9</span><span class="changelog-desc">Nueva pestaña Avisos. Se elimina el popup de inicio. Inicio de la etapa 3: el desarrollo técnico de Franez pasa a estar bajo el mando de ChatGPT.</span>';
       aboutChange.insertBefore(item,aboutChange.firstChild);
     }
 
@@ -191,7 +191,7 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0f172a}
     var st=w.state||{};
     return {
       backupVersion:'1',
-      appVersion:'3.0.11',
+      appVersion:'3.0.9',
       fechaBackup:new Date().toISOString(),
       clientes:Array.isArray(st.clientes)?st.clientes:[],
       productos:Array.isArray(st.productos)?st.productos:[],
@@ -220,7 +220,23 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0f172a}
   async function esperarDatosCRM(){
     var w=frame.contentWindow;
     for(var i=0;i<40;i++){
-      try{if(w.state&&Array.isArray(w.state.clientes))return true;}catch(e){}
+      try{
+        if(w.state && Array.isArray(w.state.clientes) && w.state.clientes.length>0)return true;
+        if(w._fbGet&&w._fbRef&&w._fbDb){
+          var snap=await w._fbGet(w._fbRef(w._fbDb,'franez'));
+          if(snap&&snap.exists()){
+            var remote=snap.val()||{};
+            if(Array.isArray(remote.clientes)&&remote.clientes.length>0){
+              for(var j=0;j<20;j++){
+                if(w.state&&Array.isArray(w.state.clientes)&&w.state.clientes.length>0)return true;
+                await new Promise(function(r){setTimeout(r,250);});
+              }
+              return true;
+            }
+          }
+          return true;
+        }
+      }catch(e){}
       await new Promise(function(r){setTimeout(r,250);});
     }
     return !!(w.state&&Array.isArray(w.state.clientes));
@@ -351,8 +367,15 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0f172a}
     var w=frame.contentWindow,c=clientePedidoActual(),texto=construirMensajePedidoV308();if(!texto)return;
     var telefono=normalizarTelefonoV308(c&&(c.movil||c.telefono));
     if(!telefono){copiarPedidoWhatsAppV308();if(w.toast)w.toast('⚠️ Este cliente no tiene móvil/teléfono. He copiado el pedido para pegarlo manualmente.','error');return;}
-    var url='https://wa.me/'+telefono+'?text='+encodeURIComponent(texto);
-    window.open(url,'_blank');
+    var normal='https://wa.me/'+telefono+'?text='+encodeURIComponent(texto);
+    var intent='intent://send?phone='+telefono+'&text='+encodeURIComponent(texto)+'#Intent;scheme=whatsapp;package=com.whatsapp.w4b;end';
+    var salio=false;
+    function cancelarFallback(){salio=true;document.removeEventListener('visibilitychange',vis);window.removeEventListener('pagehide',vis);}
+    function vis(){if(document.hidden)cancelarFallback();}
+    document.addEventListener('visibilitychange',vis);
+    window.addEventListener('pagehide',vis);
+    window.location.href=intent;
+    setTimeout(function(){if(!salio){cancelarFallback();window.location.href=normal;}},1400);
   }
   function instalarBotonWhatsApp(){
     var w=frame.contentWindow,d=frame.contentDocument;if(!w||!d||d.getElementById('btn-wa-pedido-v308'))return;
