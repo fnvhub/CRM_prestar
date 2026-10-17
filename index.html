@@ -27,7 +27,7 @@ window.onerror = function(msg, src, line) {
 </script>
 <!-- ██ BLOQUE:NAV-INICIO ██ -->
 <nav id="nav">
-  <span id="nav-title">&#9889; Franez v3.0.11 · PRÉSTAMO</span>
+  <span id="nav-title">&#9889; Franez v3.0.12 · PRÉSTAMO</span>
   <button class="nav-btn active" onclick="showPanel('pedidos',this)">Pedidos</button>
   <button class="nav-btn ai-btn" onclick="showPanel('ia',this)">&#10024; Pedido IA</button>
   <button class="nav-btn" onclick="showPanel('visitas',this)" style="display:none">&#128205; Visitas</button>
@@ -38,6 +38,7 @@ window.onerror = function(msg, src, line) {
   <button class="nav-btn" onclick="showPanel('escalado',this)">Escalado</button>
   <button class="nav-btn" onclick="showPanel('historial',this)">Historial</button>
   <button class="nav-btn" onclick="showPanel('campanas',this)">&#128227; Campa&ntilde;as <span class="nav-badge hidden" id="camp-badge">!</span></button>
+  <button class="nav-btn" id="nav-aviso-prestamo" onclick="showPanel('aviso-prestamo',this);renderAvisoPrestamo()">🔔 Aviso <span class="nav-badge hidden" id="aviso-prestamo-badge">0</span></button>
   <button class="nav-btn" onclick="showPanel('ajustes',this)">Ajustes</button>
   <button class="nav-btn" onclick="showPanel('migracion',this)">&#128260; Migración</button>
   <button class="nav-btn" onclick="showPanel('acerca',this);renderAcerca()">Acerca de</button>
@@ -68,6 +69,9 @@ window.onerror = function(msg, src, line) {
   </div>
 </div>
 <!-- ██ BLOQUE:POPUP-INICIO-INTELIGENTE-FIN ██ -->
+<!-- El aviso de contratos ya no se muestra como ventana emergente. -->
+<style>#popup-inicio{display:none!important}</style>
+
 
 <!-- ██ BLOQUE:BARRA-PEDIDO-INICIO ██ -->
 <div id="barra-pedido">
@@ -728,6 +732,19 @@ window.onerror = function(msg, src, line) {
 </div>
 <!-- ██ BLOQUE:MIGRACION-FIN ██ -->
 
+<!-- ██ BLOQUE:AVISO-PRESTAMO-INICIO ██ -->
+<div class="panel" id="panel-aviso-prestamo">
+  <div class="card" style="max-width:900px;margin:0 auto">
+    <div class="card-title" style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+      <span>🔔 Aviso</span>
+      <button class="btn btn-ghost btn-sm" onclick="renderAvisoPrestamo()">Actualizar</button>
+    </div>
+    <div style="font-size:13px;color:var(--text3);margin:4px 0 16px">Contratos próximos a vencer.</div>
+    <div id="aviso-prestamo-content"></div>
+  </div>
+</div>
+<!-- ██ BLOQUE:AVISO-PRESTAMO-FIN ██ -->
+
 <!-- ██ BLOQUE:ACERCA-DE-INICIO ██ -->
 <div class="panel" id="panel-acerca">
   <div class="card" style="max-width:700px;margin:0 auto">
@@ -774,5 +791,57 @@ window.onerror = function(msg, src, line) {
 <!-- ██ BLOQUE:CAMPANAS-FIN ██ -->
 
 <script src="franez.js"></script>
+<script>
+(function(){
+  // El popup antiguo se conserva en el HTML para no romper referencias, pero queda desactivado.
+  window.initPopupInicio=function(){};
+  function ocultarPopup(){
+    var p=document.getElementById('popup-inicio');
+    if(p){p.classList.add('hidden');p.style.setProperty('display','none','important');}
+  }
+  ocultarPopup();
+
+  window.renderAvisoPrestamo=function(){
+    var box=document.getElementById('aviso-prestamo-content');
+    var badge=document.getElementById('aviso-prestamo-badge');
+    if(!box)return;
+    var diasCfg=(window.state&&window.state.config&&window.state.config.diasContrato)||21;
+    var clientes=(window.state&&Array.isArray(window.state.clientes))?window.state.clientes:[];
+    var contratos=clientes.filter(function(c){
+      if(!c||!c.contrato||typeof window.diasParaVencer!=='function')return false;
+      var d=window.diasParaVencer(c.contrato);
+      return d>=0&&d<=diasCfg;
+    }).sort(function(a,b){
+      return window.diasParaVencer(a.contrato)-window.diasParaVencer(b.contrato);
+    });
+
+    if(badge){
+      badge.textContent=contratos.length;
+      badge.classList.toggle('hidden',contratos.length===0);
+    }
+
+    if(!contratos.length){
+      box.innerHTML='<div style="padding:24px 16px;text-align:center;color:var(--text3);border:1px dashed var(--border);border-radius:12px">✓ No hay contratos próximos a vencer.</div>';
+      return;
+    }
+
+    box.innerHTML=contratos.map(function(c){
+      var dias=window.diasParaVencer(c.contrato);
+      var clase=dias<=7?'#ef4444':(dias<=14?'#f59e0b':'#22c55e');
+      var texto=dias===0?'Vence hoy':(dias===1?'Vence mañana':'Vence en '+dias+' días');
+      var nombre=typeof window.escH==='function'?window.escH(c.nombreCompleto||'Cliente'):(c.nombreCompleto||'Cliente');
+      var fecha=typeof window.formatContratoDisplay==='function'?window.formatContratoDisplay(c.contrato):(c.contrato||'');
+      return '<div style="border:1px solid var(--border);border-left:4px solid '+clase+';border-radius:12px;padding:14px;margin-bottom:10px;background:var(--card);color:var(--text)">'+
+        '<div style="font-weight:700;font-size:14px;margin-bottom:5px">'+nombre+'</div>'+
+        '<div style="font-size:13px;color:var(--text2)">'+texto+' · '+fecha+'</div>'+
+        '</div>';
+    }).join('');
+  };
+
+  // Actualizar el contador una vez cargado el estado y mantenerlo al volver al panel.
+  setTimeout(function(){ocultarPopup();renderAvisoPrestamo();},800);
+  setTimeout(function(){ocultarPopup();renderAvisoPrestamo();},2000);
+})();
+</script>
 </body>
 </html>
