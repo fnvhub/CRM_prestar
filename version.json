@@ -6,10 +6,6 @@
     "Los datos del CRM se mantienen en el almacenamiento local del dispositivo.",
     "Se conserva la interfaz y las funciones de Franez 3.0.9, incluidos avisos, WhatsApp, email, Gemini, historial, pedidos, clientes, productos, ofertas, stock, campañas, backups y migración.",
     "Se adapta la carga de version.json a la ruta local del repositorio independiente.",
-    "3.0.10 — Variante independiente para CRM_prestar: se elimina exclusivamente Firebase y la sincronización externa.",
-    "Los datos del CRM se mantienen en el almacenamiento local del dispositivo.",
-    "Se conserva la interfaz y las funciones de Franez 3.0.9, incluidos avisos, WhatsApp, email, Gemini, historial, pedidos, clientes, productos, ofertas, stock, campañas, backups y migración.",
-    "Se adapta la carga de version.json a la ruta local del repositorio independiente.",
     "3.0.9 — Al compartir el pedido como PDF/nota se elimina el mensaje de WhatsApp; el mensaje configurable queda exclusivamente para WhatsApp.",
     "Se prepara Franez como PWA real: manifest, apertura en modo independiente y pantalla completa sin la interfaz de Chrome.",
     "Se elimina el botón 🛡️ Backup de la barra principal. El backup manual permanece en Ajustes y el automático diario sigue bajo control del usuario.",
@@ -21,16 +17,6 @@
     "Se mantiene un botón Copiar pedido para WhatsApp como plan B si el enlace directo no funciona."
   ],
   "historial": [
-    {
-      "version": "3.0.10",
-      "fecha": "2026-10-16",
-      "cambios": [
-        "3.0.10 — Variante independiente para CRM_prestar: se elimina exclusivamente Firebase y la sincronización externa.",
-        "Los datos del CRM se mantienen en el almacenamiento local del dispositivo.",
-        "Se conserva la interfaz y las funciones de Franez 3.0.9, incluidos avisos, WhatsApp, email, Gemini, historial, pedidos, clientes, productos, ofertas, stock, campañas, backups y migración.",
-        "Se adapta la carga de version.json a la ruta local del repositorio independiente."
-      ]
-    },
     {
       "version": "3.0.10",
       "fecha": "2026-10-16",
