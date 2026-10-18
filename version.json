@@ -1,7 +1,12 @@
 {
-  "version": "3.0.13",
-  "fecha": "2026-10-17",
+  "version": "3.0.15",
+  "fecha": "2026-10-18",
   "cambios": [
+    "3.0.15 — La copia de seguridad automática se realiza una sola vez al primer arranque de cada día. Se añade en Ajustes la opción para conectar/desconectar el backup automático y una nota identificando la versión pública de pruebas.",
+    "Copia de seguridad automática diaria: una vez por la mañana, al abrir la PWA, se genera una copia completa de los datos y se descarga como archivo JSON en la carpeta de Descargas del dispositivo.",
+    "La copia automática se marca por día para evitar que se genere más de una vez durante la misma mañana.",
+    "La copia incluye clientes, productos, ofertas, pedidos, historial, stock, delegado, campañas, configuración, ruta del día y acumulado mensual.",
+    "Se mantiene la copia manual de Ajustes y el resto de funciones de la versión PRÉSTAMO.",
     "WhatsApp para clientes: abre WhatsApp Business prioritariamente y, si no está disponible, WhatsApp normal, usando automáticamente el teléfono de la ficha del cliente y el pedido actual.",
     "3.0.12 — Se elimina el popup de inicio de contratos.",
     "Se añade la pestaña Aviso para consultar los contratos próximos a vencer sin ventanas emergentes.",
@@ -22,6 +27,14 @@
     "Se mantiene un botón Copiar pedido para WhatsApp como plan B si el enlace directo no funciona."
   ],
   "historial": [
+    {
+      "version": "3.0.14",
+      "fecha": "2026-10-17",
+      "cambios": [
+        "Copia de seguridad automática diaria: una vez por la mañana se genera y descarga una copia completa en JSON.",
+        "Se evita más de una copia automática el mismo día."
+      ]
+    },
     {
       "version": "3.0.13",
       "cambios": [

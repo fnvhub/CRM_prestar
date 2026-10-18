@@ -1735,35 +1735,53 @@ function crearDatosBackup(){
   };
 }
 function backupAutomaticoManana(){
+  // Copia automática diaria: se ejecuta una sola vez al primer arranque del día.
+  // El usuario puede desconectarla desde Ajustes → Backup de Datos.
+  if(localStorage.getItem('franez_backup_automatico_activo')==='false') return;
   var ahora=new Date();
   var hoy=ahora.getFullYear()+'-'+String(ahora.getMonth()+1).padStart(2,'0')+'-'+String(ahora.getDate()).padStart(2,'0');
   if(localStorage.getItem('franez_backup_automatico_dia')===hoy) return;
-  function hacerBackup(){
-    var d=new Date();
-    var fecha=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-    if(localStorage.getItem('franez_backup_automatico_dia')===fecha) return;
-    var data=crearDatosBackup();
-    var blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-    var a=document.createElement('a');
-    a.href=URL.createObjectURL(blob);
-    a.download='backup_franez_'+fecha+'.json';
-    a.style.display='none';
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(function(){URL.revokeObjectURL(a.href);if(a.parentNode)a.parentNode.removeChild(a);},1500);
-    localStorage.setItem('franez_backup_automatico_dia',fecha);
-    setTimeout(function(){toast('Copia de seguridad automática guardada \u2713');},300);
+  var data=crearDatosBackup();
+  var blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='backup_franez_'+hoy+'.json';
+  a.style.display='none';
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(function(){URL.revokeObjectURL(a.href);if(a.parentNode)a.parentNode.removeChild(a);},1500);
+  localStorage.setItem('franez_backup_automatico_dia',hoy);
+  setTimeout(function(){toast('Copia de seguridad automática guardada ✓');},300);
+}
+function configurarBackupAutomaticoUI(){
+  var card=document.getElementById('backup-file');
+  if(!card) return;
+  var cont=card.parentElement;
+  if(!cont||document.getElementById('backup-auto-control')) return;
+  var activo=localStorage.getItem('franez_backup_automatico_activo')!=='false';
+  var wrap=document.createElement('div');
+  wrap.id='backup-auto-control';
+  wrap.style.cssText='margin-top:12px;padding:10px;border:1px solid var(--border);border-radius:8px;';
+  wrap.innerHTML='<div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:4px">Copia automática diaria</div>'+
+    '<div style="font-size:11px;color:var(--text3);margin-bottom:9px">Al abrir Franez por primera vez cada día se crea una copia automáticamente y se descarga en el dispositivo.</div>'+
+    '<button id="btn-backup-auto" class="btn btn-ghost btn-sm"></button>';
+  cont.parentElement.appendChild(wrap);
+  var btn=document.getElementById('btn-backup-auto');
+  function pintar(){
+    var on=localStorage.getItem('franez_backup_automatico_activo')!=='false';
+    btn.textContent=on?'✓ Backup automático conectado':'✕ Backup automático desconectado';
   }
-  var h=ahora.getHours();
-  if(h>=6 && h<14){
-    setTimeout(hacerBackup,1200);
-  }else if(h<6){
-    var siguiente=new Date(ahora);siguiente.setHours(6,0,0,0);
-    setTimeout(hacerBackup,Math.max(1000,siguiente.getTime()-ahora.getTime()));
-  }else{
-    var siguienteManana=new Date(ahora);siguienteManana.setDate(siguienteManana.getDate()+1);siguienteManana.setHours(6,0,0,0);
-    setTimeout(hacerBackup,Math.max(1000,siguienteManana.getTime()-ahora.getTime()));
-  }
+  btn.onclick=function(){
+    var on=localStorage.getItem('franez_backup_automatico_activo')!=='false';
+    localStorage.setItem('franez_backup_automatico_activo',on?'false':'true');
+    pintar();
+    toast(on?'Backup automático desconectado':'Backup automático conectado ✓');
+  };
+  pintar();
+  var nota=document.createElement('div');
+  nota.style.cssText='margin-top:10px;padding:8px 10px;border-radius:7px;background:var(--slate2);font-size:11px;color:var(--text3);';
+  nota.textContent='VERSIÓN PÚBLICA · Pruebas de copia de seguridad automática.';
+  cont.parentElement.appendChild(nota);
 }
 function importarBackup(e){
   var file=e.target.files[0];if(!file) return;
@@ -2808,6 +2826,7 @@ function abrirGemini(){
 }
 function init(){
   loadState();loadRuta();
+  configurarBackupAutomaticoUI();
   backupAutomaticoManana();
   // PRECARGA CAMPAÑAS NUTERGIA 2026
   (function(){
