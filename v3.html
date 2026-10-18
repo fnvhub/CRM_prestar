@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="manifest" href="./manifest.json">
-<title>Franez v3.0.9</title>
+<title>Franez v3.0.16</title>
 <style>
 html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0f172a}
 #app-frame{display:block;width:100%;height:100%;border:0}
@@ -34,9 +34,9 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0f172a}
     }
 
     /* V3: versión */
-    d.title='Franez v3.0.9';
+    d.title='Franez v3.0.16';
     var navTitle=d.getElementById('nav-title');
-    if(navTitle)navTitle.textContent='⚡ Franez v3.0.9';
+    if(navTitle)navTitle.textContent='⚡ Franez v3.0.16';
 
     /* Evitar duplicados */
     if(d.getElementById('nav-avisos-v3')){
@@ -159,13 +159,13 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0f172a}
 
     /* Reflejar v3 también en Acerca de */
     var aboutVersion=d.getElementById('about-version');
-    if(aboutVersion)aboutVersion.textContent='v3.0.9';
+    if(aboutVersion)aboutVersion.textContent='v3.0.16';
 
     var aboutChange=d.getElementById('about-changelog');
     if(aboutChange){
       var item=d.createElement('div');
       item.className='changelog-item';
-      item.innerHTML='<span class="changelog-version">v3.0.9</span><span class="changelog-desc">Nueva pestaña Avisos. Se elimina el popup de inicio. Inicio de la etapa 3: el desarrollo técnico de Franez pasa a estar bajo el mando de ChatGPT.</span>';
+      item.innerHTML='<span class="changelog-version">v3.0.16</span><span class="changelog-desc">Nueva pestaña Avisos. Se elimina el popup de inicio. Inicio de la etapa 3: el desarrollo técnico de Franez pasa a estar bajo el mando de ChatGPT.</span>';
       aboutChange.insertBefore(item,aboutChange.firstChild);
     }
 
@@ -191,7 +191,7 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0f172a}
     var st=w.state||{};
     return {
       backupVersion:'1',
-      appVersion:'3.0.9',
+      appVersion:'3.0.16',
       fechaBackup:new Date().toISOString(),
       clientes:Array.isArray(st.clientes)?st.clientes:[],
       productos:Array.isArray(st.productos)?st.productos:[],
@@ -298,19 +298,31 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0f172a}
     card.style.marginTop='14px';
     card.innerHTML=
       '<div class="card-title">🛡️ Copia de seguridad</div>'+
-      '<div style="font-size:13px;color:var(--text3);line-height:1.5;margin:6px 0 12px">Descarga un JSON completo una vez al día en la carpeta de Descargas del navegador. Tú tienes la última palabra y puedes desconectarlo cuando quieras.</div>'+
-      '<label style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;cursor:pointer">'+
-        '<span><strong>Backup automático diario</strong><br><span style="font-size:12px;color:var(--text3)">Activo por defecto. El botón 🛡️ Backup sigue disponible aunque lo desactives.</span></span>'+
-        '<input id="backup-auto-switch-v308" type="checkbox" style="width:22px;height:22px;flex:0 0 auto">'+
-      '</label>';
+      '<div style="font-size:13px;color:var(--text3);line-height:1.5;margin:6px 0 12px">Se crea automáticamente una copia completa una vez al día, la primera vez que se abre el CRM ese día, y se descarga en la carpeta de Descargas.</div>'+
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">'+
+        '<button class="btn btn-primary btn-sm" id="backup-manual-v316">🛡️ Hacer backup ahora</button>'+
+        '<button class="btn btn-ghost btn-sm" id="backup-toggle-v316"></button>'+
+      '</div>'+
+      '<div id="backup-status-v316" style="font-size:12px;color:var(--text3);margin-top:8px"></div>'+
+      '<div style="font-size:11px;color:var(--text3);margin-top:8px">VERSIÓN PÚBLICA · Pruebas de copia de seguridad.</div>';
     panel.appendChild(card);
 
-    var sw=d.getElementById('backup-auto-switch-v308');
-    sw.checked=backupAutomaticoActivo();
-    sw.onchange=function(){
-      localStorage.setItem(BACKUP_AUTO_KEY,sw.checked?'on':'off');
-      if(w.toast)w.toast(sw.checked?'🛡️ Backup automático activado ✓':'🛡️ Backup automático desconectado','ok');
+    var sw=d.getElementById('backup-toggle-v316');
+    var manual=d.getElementById('backup-manual-v316');
+    var status=d.getElementById('backup-status-v316');
+    function refrescarBackupUI(){
+      var activo=backupAutomaticoActivo();
+      sw.textContent=activo?'⏸️ Desconectar backup automático':'▶️ Conectar backup automático';
+      status.textContent=activo?'Backup automático: ACTIVADO':'Backup automático: DESACTIVADO';
+    }
+    sw.onclick=function(){
+      var activo=backupAutomaticoActivo();
+      localStorage.setItem(BACKUP_AUTO_KEY,activo?'off':'on');
+      refrescarBackupUI();
+      if(w.toast)w.toast(activo?'🛡️ Backup automático desconectado':'🛡️ Backup automático activado ✓','ok');
     };
+    manual.onclick=function(){forzarBackupManual();};
+    refrescarBackupUI();
   }
 
 
